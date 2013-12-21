@@ -1,0 +1,216 @@
+
+<!DOCTYPE HTML>
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<title>Emacs Help Command  | POEMS</title>
+
+	<meta name="author" content="Pieux Xi">
+
+<meta name="description" content="You have typed C-h, the help character. Type a Help option:
+(Use SPC or DEL to scroll through this text. Type q to exit the Help command.) 常用的是： 1
+2 &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="POEMS" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">POEMS</a></h1>
+<span class="tagline">Young & Foolish</span>
+<!-- <nav id="main-nav"><ul>
+	<li><a href="/about">About</a></li>
+	<li><a href="/archives">Archives</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</nav> -->
+<!-- <nav id="mobile-nav"> -->
+<!-- 	<div class="alignleft menu"> -->
+<!-- 		<a class="button">Menu</a> -->
+<!-- 		<div class="container"><ul>
+	<li><a href="/about">About</a></li>
+	<li><a href="/archives">Archives</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</div> -->
+<!-- 	</div> -->
+<!-- </nav> -->
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<header>
+		<h2 class="title">Emacs Help Command</h2>
+		<div class="meta date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-30T03:30:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time></div>
+	</header>
+	<div class="entry-content"><p>You have typed C-h, the help character.  Type a Help option:
+(Use SPC or DEL to scroll through this text.  Type q to exit the Help command.)</p>
+
+<p>常用的是：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>a PATTERN   Show commands whose name matches the PATTERN (a list of words
+</span><span class='line'>              or a regexp).  See also the `apropos' command.              
+</span><span class='line'>b           Display all key bindings.
+</span><span class='line'>c KEYS      Display the command name run by the given key sequence.
+</span><span class='line'>C CODING    Describe the given coding system, or RET for current ones.
+</span><span class='line'>d PATTERN   Show a list of functions, variables, and other items whose
+</span><span class='line'>              documentation matches the PATTERN (a list of words or a regexp).
+</span><span class='line'>e           Go to the *Messages* buffer which logs echo-area messages.
+</span><span class='line'>f FUNCTION  Display documentation for the given function.
+</span><span class='line'>F COMMAND   Show the on-line manual's section that describes the command.
+</span><span class='line'>g           Display information about the GNU project.
+</span><span class='line'>h           Display the HELLO file which illustrates various scripts.
+</span><span class='line'>i           Start the Info documentation reader: read on-line manuals.
+</span><span class='line'>I METHOD    Describe a specific input method, or RET for current.
+</span><span class='line'>k KEYS      Display the full documentation for the key sequence.
+</span><span class='line'>K KEYS      Show the on-line manual's section for the command bound to KEYS.
+</span><span class='line'>l           Show last 300 input keystrokes (lossage).
+</span><span class='line'>L LANG-ENV  Describes a specific language environment, or RET for current.
+</span><span class='line'>m           Display documentation of current minor modes and current major mode,
+</span><span class='line'>              including their special commands.
+</span><span class='line'>n           Display news of recent Emacs changes.
+</span><span class='line'>p TOPIC     Find packages matching a given topic keyword.
+</span><span class='line'>r           Display the Emacs manual in Info mode.
+</span><span class='line'>s           Display contents of current syntax table, plus explanations.
+</span><span class='line'>S SYMBOL    Show the section for the given symbol in the on-line manual
+</span><span class='line'>              for the programming language used in this buffer.
+</span><span class='line'>t           Start the Emacs learn-by-doing tutorial.
+</span><span class='line'>v VARIABLE  Display the given variable's documentation and value.
+</span><span class='line'>w COMMAND   Display which keystrokes invoke the given command (where-is).
+</span><span class='line'>.           Display any available local help at point in the echo area.
+</span><span class='line'>
+</span><span class='line'>C-a         Information about Emacs.
+</span><span class='line'>C-c         Emacs copying permission (GNU General Public License).
+</span><span class='line'>C-d         Instructions for debugging GNU Emacs.
+</span><span class='line'>C-e         External packages and information about Emacs.
+</span><span class='line'>C-f         Emacs FAQ.
+</span><span class='line'>C-m         How to order printed Emacs manuals.
+</span><span class='line'>C-n         News of recent Emacs changes.
+</span><span class='line'>C-o         Emacs ordering and distribution information.
+</span><span class='line'>C-p         Info about known Emacs problems.
+</span><span class='line'>C-t         Emacs TODO list.
+</span><span class='line'>C-w         Information on absence of warranty for GNU Emacs.
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+</article>
+
+	
+	<div class="share">
+	  <!-- <ul> -->
+	  <!--   <li>
+  <a href="https://twitter.com/intent/tweet?text=Emacs Help Command by @&url=http://pieux.github.io/blog/2013/11/30/emacs-help-command/" title="Share Emacs Help Command on Twitter">
+    <img src="/images/social/twitter.png" />
+  </a>
+</li>
+ -->
+	  <!--   <li>
+  <a href="https://www.facebook.com/sharer.php?u=http://pieux.github.io/blog/2013/11/30/emacs-help-command/" title="Share Emacs Help Command on Facebook">
+    <img src="/images/social/facebook.png" />
+  </a>
+</li>
+ -->
+	  <!--   <li>
+  <a href="https://plus.google.com/share?url=http://pieux.github.io/blog/2013/11/30/emacs-help-command/" title="Share Emacs Help Command on Google Plus">
+    <img src="/images/social/google.png" />
+  </a>
+</li>
+ -->
+	  <!-- </ul> -->
+	</div>
+
+
+
+</div>
+	<footer id="footer" class="inner"><br>
+<br>
+<br>
+<br>
+&copy; 2013
+
+    Pieux Xi
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/hyphenator.js"></script>
+
+
+
+
+
+
+
+</body>
+<script>
+  $(document).ready(function() {
+  // Make images center
+  $('p:has(img)').css('text-align', 'center');
+  });
+</script>
+</html>

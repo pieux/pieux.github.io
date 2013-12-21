@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Linux | POEMS]]></title>
+  <link href="http://pieux.github.io/blog/categories/linux/atom.xml" rel="self"/>
+  <link href="http://pieux.github.io/"/>
+  <updated>2013-12-21T20:21:41+08:00</updated>
+  <id>http://pieux.github.io/</id>
+  <author>
+    <name><![CDATA[Pieux Xi]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Linux Useful Tricks]]></title>
+    <link href="http://pieux.github.io/blog/2013/11/29/linux-useful-tricks/"/>
+    <updated>2013-11-29T08:18:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/11/29/linux-useful-tricks</id>
+    <content type="html"><![CDATA[<h2>课后任务</h2>
+
+<p>使用vagrant搭建Linux虚拟机</p>
+
+<p><a href="http://docs.vagrantup.com/v2/getting-started/index.html">官方网址</a></p>
+
+<p>1 首先安装 <a href="http://www.virtualbox.org/">virtualbox</a></p>
+
+<p>2 安装<a href="http://docs.vagrantup.com/v2/installation/">vagrant</a></p>
+
+<p>3 打开cmd，或者终端，运行以下命令，注意这一步会下载一个Linux发行版，大约3，400M吧。所以，你也可以用迅雷到网上下载下来，然后把 <code>http://files.vagrantup.com/precise32.box</code> 改成你文件的路径，比如我的是<code>file:///Users/pieux/Documents/o/precise32.box</code></p>
+
+<p><code>
+$ vagrant init precise32 http://files.vagrantup.com/precise32.box
+$ vagrant up
+</code></p>
+
+<p>4 SSH 进入linux吧！<code>vagrant ssh</code>，退出就是 <code>exit</code></p>
+
+<p>5 关闭Linux的命令是，休眠<code>vagrant suspend</code>，或者关闭<code>vagrant halt</code>。</p>
+
+<h2>man 命令</h2>
+
+<p><code>
+1   使用者在shell中可以操作的指令或可执行档
+2   系統核心可呼叫的函数与工具等
+3   一些常用的函数(function)与函数库(library)，大部分是C的函数库(libc)
+4   装置档案的说明，通常在/dev下的档案
+5   设定档或者是某些档案的格式
+6   游戏(games)
+7   惯例与协定等，例如Linux档案系统、网络协定、ASCII code等等的說明
+8   系統管理員可用的管理指令
+9   跟kernel有关的文件
+</code></p>
+
+<h2>tree 命令</h2>
+
+<p><code>
+tree
+-a
+-A
+-C
+man tree
+</code></p>
+
+<h1>shell 快捷键</h1>
+
+<p>编辑命令</p>
+
+<p><code>
+Ctrl + a ：移到命令行首
+Ctrl + e ：移到命令行尾
+Ctrl + f ：按字符前移（右向）
+Ctrl + b ：按字符后移（左向）
+Alt + f ：按单词前移（右向）
+Alt + b ：按单词后移（左向）
+Ctrl + u ：从光标处删除至命令行首
+Ctrl + k ：从光标处删除至命令行尾
+Ctrl + d ：删除光标处的字符
+Ctrl + y ：粘贴至光标后
+</code></p>
+
+<p>重新执行命令</p>
+
+<p><code>
+Ctrl + r：逆向搜索命令历史
+Ctrl + g：从历史搜索模式退出
+Ctrl + p：历史中的上一条命令
+Ctrl + n：历史中的下一条命令
+</code></p>
+
+<p>控制命令</p>
+
+<p><code>
+Ctrl + l：清屏
+Ctrl + s：阻止屏幕输出
+Ctrl + q：允许屏幕输出
+Ctrl + c：终止命令
+Ctrl + z：挂起命令
+</code></p>
+
+<h2>grep 命令</h2>
+
+<p><code>
+grep
+-v 反选
+-E 正则
+-i 忽略大小写
+-n 加上行号
+</code>
+简单的正则表达式：</p>
+
+<p><code>
+^ 行首
+$ 行尾
+. 任意字符
+* &gt;0个重复
++ &gt;1个重复
+[Gg], [A-Za-z]
+\&lt; 单词首
+\&gt; 单词尾
+</code></p>
+
+<h2>进程相关</h2>
+
+<p><code>
+ps -aux | grep process-name
+pgrep
+kill
+pkill
+killall
+</code></p>
+
+<h2>find</h2>
+
+<p><code>
+find -name
+find -not -name
+-i
+-type fdl
+-mindepth 3
+-maxdepth 3
+-exec ls -l {} \;
+| xargs ls -l
+</code></p>
+
+<h2>其他</h2>
+
+<p>```
+touch 创建文件
+alias 别名
+history
+sudo !! 重执行上一条命令
+cd &ndash; 进入之前的目录
+wc
+chmod
+du -hd 1
+du -h &mdash;max-depth=1
+Ctrl-Z 挂起
+fg 恢复</p>
+
+<blockquote><p>.gitignore
+&lt; .gitignore
+mv filename.{old,new}
+rm !(<em>.foo|</em>.bar|*.baz)
+```</p></blockquote>
+
+<h2>git 相关</h2>
+
+<p><code>
+git add -A
+git reset --soft
+git reset --mixed
+git reset --hard
+</code></p>
+
+<h2>学习资料推荐</h2>
+
+<p><a href="http://www.commandlinefu.com/commands/tagged/800/commandfu">http://www.commandlinefu.com/commands/tagged/800/commandfu</a></p>
+]]></content>
+  </entry>
+  
+</feed>

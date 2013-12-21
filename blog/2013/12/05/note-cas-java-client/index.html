@@ -1,0 +1,558 @@
+
+<!DOCTYPE HTML>
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<title>NOTE: CAS Java Client  | POEMS</title>
+
+	<meta name="author" content="Pieux Xi">
+
+<meta name="description" content="CAS Client for Java 3.1 通过 web.xml 配置 Jasig CAS Client for Java CAS Client for Java 3.1/3.2 可以通过配置 web.xml 里的 context-params 和 filter init-params。每个 &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="POEMS" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">POEMS</a></h1>
+<span class="tagline">Young & Foolish</span>
+<!-- <nav id="main-nav"><ul>
+	<li><a href="/about">About</a></li>
+	<li><a href="/archives">Archives</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</nav> -->
+<!-- <nav id="mobile-nav"> -->
+<!-- 	<div class="alignleft menu"> -->
+<!-- 		<a class="button">Menu</a> -->
+<!-- 		<div class="container"><ul>
+	<li><a href="/about">About</a></li>
+	<li><a href="/archives">Archives</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</div> -->
+<!-- 	</div> -->
+<!-- </nav> -->
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<header>
+		<h2 class="title">NOTE: CAS Java Client</h2>
+		<div class="meta date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-05T08:43:00+08:00" pubdate data-updated="true">Dec 5<span>th</span>, 2013</time></div>
+	</header>
+	<div class="entry-content"><h1>CAS Client for Java 3.1</h1>
+
+<h2>通过 web.xml 配置 Jasig CAS Client for Java</h2>
+
+<p>CAS Client for Java 3.1/3.2 可以通过配置 web.xml 里的 context-params 和 filter init-params。每个 filter 都需要配置一系列的属性（properties）。filters 会查找这些属性：</p>
+
+<ol>
+<li>首先检查 filter 的本地 init-params（local init-params），看是否有相符合的属性名；</li>
+<li>其次检查 context 的参数 ，看是否有相符合的属性名；</li>
+</ol>
+
+
+<p>如果在 filter 的 init-params 和 context 的参数中找到相同的值，则选用 init-params。</p>
+
+<p>同样，filter 的顺序为：</p>
+
+<ol>
+<li>SingleLogOutFilter (if you&rsquo;re using it)</li>
+<li>AuthenticationFilter</li>
+<li>TicketValidationFilter (whichever one is chosen)</li>
+<li>HttpServletRequestWrapperFilter</li>
+<li>AssertionThreadLocalFilter</li>
+</ol>
+
+
+<blockquote><p>! 如果使用 serverName 属性，请注意 fragment-URL(#后的 URL)不会发送给服务器。</p></blockquote>
+
+<p>一一介绍可用的 filters:</p>
+
+<h3>org.jasig.cas.client.authentication.AuthenticationFilter</h3>
+
+<p>AuthenticationFilter 判断一个用户是否需要验证。如果需要，则重定向到 CAS server。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;filter&gt;
+</span><span class='line'>  &lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+</span><span class='line'>  &lt;filter-class&gt;org.jasig.cas.client.authentication.AuthenticationFilter&lt;/filter-class&gt;
+</span><span class='line'>  &lt;init-param&gt;
+</span><span class='line'>    &lt;!--cas server login url--&gt;
+</span><span class='line'>    &lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
+</span><span class='line'>    &lt;param-value&gt;https://battags.ad.ess.rutgers.edu:8443/cas/login&lt;/param-value&gt;
+</span><span class='line'>  &lt;/init-param&gt;
+</span><span class='line'>  &lt;init-param&gt;
+</span><span class='line'>    &lt;!--cas server name--&gt;
+</span><span class='line'>    &lt;param-name&gt;serverName&lt;/param-name&gt;
+</span><span class='line'>    &lt;param-value&gt;http://www.acme-client.com&lt;/param-value&gt;
+</span><span class='line'>  &lt;/init-param&gt;
+</span><span class='line'>&lt;/filter&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Required Properties</strong></p>
+
+<ul>
+<li>casServerLoginUrl: CAS server 的登录页地址，i.e. <a href="https://localhost:8443/cas/login">https://localhost:8443/cas/login</a></li>
+<li>service or serverName
+
+<ul>
+<li>service: 发送给 CAS server 的服务的 URL，e.g. <a href="https://localhost:8443/yourwebapp/index.html">https://localhost:8443/yourwebapp/index.html</a></li>
+<li>serverName: 应用部署的服务器名。service URL 会据此动态生成。i.e. <a href="https://localhost:8443">https://localhost:8443</a> (需要指定协议，如果是标准端口，则端口可隐式)。</li>
+</ul>
+</li>
+</ul>
+
+
+<p><strong>Optional Properties</strong>:</p>
+
+<p>有 <em>renew</em>, <em>gateway</em>, <em>artifactParameterName</em>, <em>serviceParameterName</em>。</p>
+
+<h3>org.jasig.cas.client.authentication.Saml11AuthenticationFilter</h3>
+
+<p>猜测是支持 SAML 1.1 的 authentication filter。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;filter&gt;
+</span><span class='line'>  &lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+</span><span class='line'>  &lt;filter-class&gt;org.jasig.cas.client.authentication.AuthenticationFilter&lt;/filter-class&gt;
+</span><span class='line'>  &lt;init-param&gt;
+</span><span class='line'>    &lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
+</span><span class='line'>    &lt;param-value&gt;https://battags.ad.ess.rutgers.edu:8443/cas/login&lt;/param-value&gt;
+</span><span class='line'>  &lt;/init-param&gt;
+</span><span class='line'>  &lt;init-param&gt;
+</span><span class='line'>    &lt;param-name&gt;serverName&lt;/param-name&gt;
+</span><span class='line'>    &lt;param-value&gt;http://www.acme-client.com&lt;/param-value&gt;
+</span><span class='line'>  &lt;/init-param&gt;
+</span><span class='line'>&lt;/filter&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>org.jasig.cas.client.validation.Saml11TicketValidationFilter</h3>
+
+<p>使用 SAML 1.1 协议验证 tickets。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;filter&gt;
+</span><span class='line'>  &lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+</span><span class='line'>  &lt;filter-class&gt;org.jasig.cas.client.validation.Saml11TicketValidationFilter&lt;/filter-class&gt;
+</span><span class='line'>  &lt;init-param&gt;
+</span><span class='line'>    &lt;param-name&gt;casServerUrlPrefix&lt;/param-name&gt;
+</span><span class='line'>    &lt;param-value&gt;https://battags.ad.ess.rutgers.edu:8443/cas&lt;/param-value&gt;
+</span><span class='line'>  &lt;/init-param&gt;
+</span><span class='line'>  &lt;init-param&gt;
+</span><span class='line'>    &lt;param-name&gt;serverName&lt;/param-name&gt;
+</span><span class='line'>    &lt;param-value&gt;http://www.acme-client.com&lt;/param-value&gt;
+</span><span class='line'>  &lt;/init-param&gt;
+</span><span class='line'> &lt;/filter&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Required Properties</strong></p>
+
+<ul>
+<li>casServerUrlPrefix: CAS 服务器的URL起始页，i.e. <a href="https://localhost:8443/cas">https://localhost:8443/cas</a></li>
+<li>serverName or service: 同上</li>
+</ul>
+
+
+<p><strong>Optional Properties</strong></p>
+
+<ul>
+<li>redirectAfterValidation (default: true)</li>
+<li>useSession (default: true)</li>
+<li>exceptionOnValidationFailure (default: true)</li>
+<li>tolerance (default: 1000 mSec)</li>
+<li>renew (default: false)</li>
+</ul>
+
+
+<h3>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</h3>
+
+<p>Wraps an HttpServletRequest so that the getRemoteUser and getPrincipal return the CAS related entries.</p>
+
+<p>包裹 HttpServletRequest，使 getRemoteUser 和 getPrincipal 返回 CAS 相关的入口。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;filter&gt;
+</span><span class='line'>  &lt;filter-name&gt;CAS HttpServletRequest Wrapper Filter&lt;/filter-name&gt;
+</span><span class='line'>  &lt;filter-class&gt;org.jasig.cas.client.util.HttpServletRequestWrapperFilter&lt;/filter-class&gt;
+</span><span class='line'>&lt;/filter&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Required Properties</strong></p>
+
+<p>None</p>
+
+<p><strong>Optional Properties</strong></p>
+
+<p>None</p>
+
+<h3>org.jasig.cas.client.util.AssertionThreadLocalFilter</h3>
+
+<p>Places the Assertion in a ThreadLocal for portions of the application that need access to it. This is useful when the Web application that this filter &ldquo;fronts&rdquo; needs to get the Principal name, but it has no access to the HttpServletRequest, hence making getRemoteUser() call impossible.</p>
+
+<p>把这个 Assertion 放进 ThreadLocal 中，因为有些应用可能需要。比如：当 Web 应用需要拿到 Principal 的名字，但是它无法访问 HttpServletRequest，因此 getRemoteUser() 没有用。</p>
+
+<blockquote><p>! 没搞懂什么意思，猜测是 CAS Client 应用想要拿到登陆的用户名，但是用户名存储在 CAS Server 上。这个 filter 的作用就是把 Principal 放到 ThreadLocal 变量中。</p></blockquote>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;filter&gt;
+</span><span class='line'>  &lt;filter-name&gt;CAS Assertion Thread Local Filter&lt;/filter-name&gt;
+</span><span class='line'>  &lt;filter-class&gt;org.jasig.cas.client.util.AssertionThreadLocalFilter&lt;/filter-class&gt;
+</span><span class='line'>&lt;/filter&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>e.g. 一份稍完整的 CAS Client for Java 的 web.xml（未使用 SAML 1.1，为 CAS 协议）</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+</span><span class='line'>&lt;web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+</span><span class='line'>    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+</span><span class='line'>    version="2.4"&gt;
+</span><span class='line'>
+</span><span class='line'>    &lt;display-name&gt;CAS client demo : application&lt;/display-name&gt;
+</span><span class='line'>
+</span><span class='line'>    &lt;filter&gt;
+</span><span class='line'>        &lt;!--配置 AuthenticationFilter--&gt;
+</span><span class='line'>        &lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+</span><span class='line'>        &lt;filter-class&gt;org.jasig.cas.client.authentication.AuthenticationFilter&lt;/filter-class&gt;
+</span><span class='line'>        &lt;init-param&gt;
+</span><span class='line'>            &lt;!--property: 登陆页配置--&gt;
+</span><span class='line'>            &lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
+</span><span class='line'>            &lt;param-value&gt;http://localhost:8080/cas/login&lt;/param-value&gt;
+</span><span class='line'>        &lt;/init-param&gt;
+</span><span class='line'>        &lt;init-param&gt;
+</span><span class='line'>            &lt;!--property: 部署服务器地址--&gt;
+</span><span class='line'>            &lt;param-name&gt;serverName&lt;/param-name&gt;
+</span><span class='line'>            &lt;param-value&gt;http://localhost:8080&lt;/param-value&gt;
+</span><span class='line'>        &lt;/init-param&gt;
+</span><span class='line'>        &lt;!-- init-param&gt;
+</span><span class='line'>            &lt;param-name&gt;service&lt;/param-name&gt;
+</span><span class='line'>            &lt;param-value&gt;http://localhost:8080/default.jsp&lt;/param-value&gt;
+</span><span class='line'>        &lt;/init-param--&gt;
+</span><span class='line'>    &lt;/filter&gt;
+</span><span class='line'>
+</span><span class='line'>    &lt;filter&gt;
+</span><span class='line'>        &lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+</span><span class='line'>        &lt;filter-class&gt;org.jasig.cas.client.validation.Cas10TicketValidationFilter&lt;/filter-class&gt;
+</span><span class='line'>        &lt;init-param&gt;
+</span><span class='line'>            &lt;param-name&gt;casServerUrlPrefix&lt;/param-name&gt;
+</span><span class='line'>            &lt;param-value&gt;http://localhost:8080/cas&lt;/param-value&gt;
+</span><span class='line'>        &lt;/init-param&gt;
+</span><span class='line'>        &lt;init-param&gt;
+</span><span class='line'>            &lt;param-name&gt;serverName&lt;/param-name&gt;
+</span><span class='line'>            &lt;param-value&gt;http://localhost:8080&lt;/param-value&gt;
+</span><span class='line'>        &lt;/init-param&gt;
+</span><span class='line'>    &lt;/filter&gt;
+</span><span class='line'>
+</span><span class='line'>    &lt;filter-mapping&gt;
+</span><span class='line'>        &lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+</span><span class='line'>        &lt;url-pattern&gt;/protected/*&lt;/url-pattern&gt;
+</span><span class='line'>    &lt;/filter-mapping&gt;
+</span><span class='line'>
+</span><span class='line'>    &lt;filter-mapping&gt;
+</span><span class='line'>        &lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+</span><span class='line'>        &lt;url-pattern&gt;*&lt;/url-pattern&gt;
+</span><span class='line'>    &lt;/filter-mapping&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;/web-app&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>e.g. 使用 SAML 1.1</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+</span><span class='line'>&lt;web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+</span><span class='line'>  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+</span><span class='line'>  version="2.4"&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;display-name&gt;CAS client demo : application&lt;/display-name&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;filter&gt;
+</span><span class='line'>      &lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+</span><span class='line'>      &lt;filter-class&gt;org.jasig.cas.client.authentication.Saml11AuthenticationFilter&lt;/filter-class&gt;
+</span><span class='line'>      &lt;init-param&gt;
+</span><span class='line'>          &lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
+</span><span class='line'>          &lt;param-value&gt;http://localhost:8080/cas/login&lt;/param-value&gt;
+</span><span class='line'>      &lt;/init-param&gt;
+</span><span class='line'>      &lt;init-param&gt;
+</span><span class='line'>          &lt;param-name&gt;serverName&lt;/param-name&gt;
+</span><span class='line'>          &lt;param-value&gt;http://localhost:8080&lt;/param-value&gt;
+</span><span class='line'>      &lt;/init-param&gt;
+</span><span class='line'>      &lt;init-param&gt;
+</span><span class='line'>          &lt;param-name&gt;onlyFullyAuthenticated&lt;/param-name&gt;
+</span><span class='line'>            &lt;param-value&gt;true&lt;/param-value&gt;
+</span><span class='line'>        &lt;/init-param&gt;
+</span><span class='line'>  &lt;/filter&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;filter&gt;
+</span><span class='line'>      &lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+</span><span class='line'>      &lt;filter-class&gt;org.jasig.cas.client.validation.Saml11TicketValidationFilter&lt;/filter-class&gt;
+</span><span class='line'>      &lt;init-param&gt;
+</span><span class='line'>          &lt;param-name&gt;casServerUrlPrefix&lt;/param-name&gt;
+</span><span class='line'>          &lt;param-value&gt;http://localhost:8080/cas&lt;/param-value&gt;
+</span><span class='line'>      &lt;/init-param&gt;
+</span><span class='line'>      &lt;init-param&gt;
+</span><span class='line'>          &lt;param-name&gt;serverName&lt;/param-name&gt;
+</span><span class='line'>          &lt;param-value&gt;http://localhost:8080&lt;/param-value&gt;
+</span><span class='line'>      &lt;/init-param&gt;
+</span><span class='line'>  &lt;/filter&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;filter-mapping&gt;
+</span><span class='line'>      &lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+</span><span class='line'>      &lt;url-pattern&gt;/protected/*&lt;/url-pattern&gt;
+</span><span class='line'>  &lt;/filter-mapping&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;filter-mapping&gt;
+</span><span class='line'>      &lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+</span><span class='line'>      &lt;url-pattern&gt;*&lt;/url-pattern&gt;
+</span><span class='line'>  &lt;/filter-mapping&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;/web-app&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>配置单点登出 Single Sign Out</h2>
+
+<blockquote><p>! <em>SingleSignOutFilter</em> 会影响到 character encoding。建议显式地配置下 <a href="http://code.google.com/p/vt-middleware/wiki/vtservletfilters#CharacterEncodingFilter">VT Character Encoding Filter</a> 或 <a href="http://static.springsource.org/spring/docs/2.0.x/api/org/springframework/web/filter/CharacterEncodingFilter.html">Spring Character Encoding Filter</a>。</p></blockquote>
+
+<p>CAS 对 Single Sign Out support 的支持，涉及到对一个 filter 和一个 ContextListener 的配置。需要注意的一点是，如果以 Web filters 的形式为 Java 配置 CAS Client，登出的 filter 需要在其他 filters 前面。</p>
+
+<p><strong>PS</strong>: Order of Required Filters <a href="https://wiki.jasig.org/display/CASC/CAS+Client+for+Java+3.1">全文链接</a>
+Order of Required Filters</p>
+
+<p>How to configure the filters is described on the pages above. This section details the order in which the filters should appear:</p>
+
+<ol>
+<li>SingleLogOutFilter (if you&rsquo;re using it)</li>
+<li>AuthenticationFilter</li>
+<li>TicketValidationFilter (whichever one is chosen)</li>
+<li>HttpServletRequestWrapperFilter</li>
+<li>AssertionThreadLocalFilter</li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;listenerclass&gt;
+</span><span class='line'>  org.jasig.cas.client.session.SingleSignOutHttpSessionListener&lt;/listener-class&gt;
+</span><span class='line'>&lt;/listener&gt;</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+</article>
+
+	
+	<div class="share">
+	  <!-- <ul> -->
+	  <!--   <li>
+  <a href="https://twitter.com/intent/tweet?text=NOTE: CAS Java Client by @&url=http://pieux.github.io/blog/2013/12/05/note-cas-java-client/" title="Share NOTE: CAS Java Client on Twitter">
+    <img src="/images/social/twitter.png" />
+  </a>
+</li>
+ -->
+	  <!--   <li>
+  <a href="https://www.facebook.com/sharer.php?u=http://pieux.github.io/blog/2013/12/05/note-cas-java-client/" title="Share NOTE: CAS Java Client on Facebook">
+    <img src="/images/social/facebook.png" />
+  </a>
+</li>
+ -->
+	  <!--   <li>
+  <a href="https://plus.google.com/share?url=http://pieux.github.io/blog/2013/12/05/note-cas-java-client/" title="Share NOTE: CAS Java Client on Google Plus">
+    <img src="/images/social/google.png" />
+  </a>
+</li>
+ -->
+	  <!-- </ul> -->
+	</div>
+
+
+
+</div>
+	<footer id="footer" class="inner"><br>
+<br>
+<br>
+<br>
+&copy; 2013
+
+    Pieux Xi
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/hyphenator.js"></script>
+
+
+
+
+
+
+
+</body>
+<script>
+  $(document).ready(function() {
+  // Make images center
+  $('p:has(img)').css('text-align', 'center');
+  });
+</script>
+</html>

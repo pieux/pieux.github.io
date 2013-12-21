@@ -1,0 +1,205 @@
+
+<!DOCTYPE HTML>
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<title>macro &amp; defmacro in Emacs  | POEMS</title>
+
+	<meta name="author" content="Pieux Xi">
+
+<meta name="description" content="学习下Lisp的宏（macro）。 首先，区别：Lisp宏和键盘宏（keyboard macro）是两个不同的概念。 一个LISP宏(Lisp Macro)是一个扩展LISP语言的用户定义的结构. 宏不像函数那样对参数执行表达式. 它们只是在构造一个包括这些参数的表达式. 也就是，宏是一个结构， &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="POEMS" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">POEMS</a></h1>
+<span class="tagline">Young & Foolish</span>
+<!-- <nav id="main-nav"><ul>
+	<li><a href="/about">About</a></li>
+	<li><a href="/archives">Archives</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</nav> -->
+<!-- <nav id="mobile-nav"> -->
+<!-- 	<div class="alignleft menu"> -->
+<!-- 		<a class="button">Menu</a> -->
+<!-- 		<div class="container"><ul>
+	<li><a href="/about">About</a></li>
+	<li><a href="/archives">Archives</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</div> -->
+<!-- 	</div> -->
+<!-- </nav> -->
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<header>
+		<h2 class="title">Macro &amp; Defmacro in Emacs</h2>
+		<div class="meta date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-23T16:42:00+08:00" pubdate data-updated="true">Nov 23<span>rd</span>, 2013</time></div>
+	</header>
+	<div class="entry-content"><p>学习下Lisp的宏（macro）。</p>
+
+<p>首先，区别：Lisp宏和键盘宏（keyboard macro）是两个不同的概念。</p>
+
+<p>一个LISP宏(Lisp Macro)是一个扩展LISP语言的用户定义的结构.
+ 宏不像函数那样对参数执行表达式. 它们只是在构造一个包括这些参数的表达式.</p>
+
+<blockquote><p>也就是，宏是一个结构，是在构造。就是Lisp非常牛逼的一点：Code as data。</p></blockquote>
+
+<p>首先看下语法定义：</p>
+
+<p><code>defmacro</code> is a Lisp macro in `byte-run.el&#8217;.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(defmacro NAME ARGLIST &optional DOCSTRING DECL &rest BODY)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Define NAME as a macro.
+When the macro is called, as in (NAME ARGS&hellip;),
+the function (lambda ARGLIST BODY&hellip;) is applied to
+the list ARGS&hellip; as it appears in the expression,
+and the result should be a form to be evaluated instead of the original.
+DECL is a declaration, optional, of the form (declare DECLS&hellip;) where
+DECLS is a list of elements of the form (PROP . VALUES).  These are
+interpreted according to `macro-declarations-alist&#8217;.
+The return value is undefined.</p>
+
+<p>好长的解释。</p>
+
+<p>看一个实例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(defmacro inc (var)
+</span><span class='line'>  (list 'setq var (list '1+ var)))
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>注意一点：<code>(list '1+ var)</code> 开始时写成<code>(list '1+var)</code>，少写了一个空格。</p></blockquote>
+
+<p>定义了一个Lisp宏：<code>inc (var)</code>。这个macro的BODY是（按照list函数拼出来）:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(setq var (1+ var))</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然也可以这样展开宏：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(macroexpand '(inc x))</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在就可以用宏了：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(setq x 1)
+</span><span class='line'>(inc x)</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>解释:</p></blockquote>
+
+<p><code>list</code> 的用法</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>list is a built-in function in `C source code'.
+</span><span class='line'>
+</span><span class='line'>(list &rest OBJECTS)
+</span><span class='line'>
+</span><span class='line'>Return a newly created list with specified arguments as elements.
+</span><span class='line'>Any number of arguments, even zero arguments, are allowed.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>宏还有一种写法，就是使用反引用（Backquote）。</p>
+
+<p>我们可以用 &lsquo; 引用一个对象并不执行.我们还可以用 反引用 ` 引用一个列表, 但是只是选择性的执行列表的元素.</p>
+</div>
+
+</article>
+
+	
+	<div class="share">
+	  <!-- <ul> -->
+	  <!--   <li>
+  <a href="https://twitter.com/intent/tweet?text=macro &amp; defmacro in Emacs by @&url=http://pieux.github.io/blog/2013/11/23/macro-and-defmacro-in-emacs/" title="Share macro &amp; defmacro in Emacs on Twitter">
+    <img src="/images/social/twitter.png" />
+  </a>
+</li>
+ -->
+	  <!--   <li>
+  <a href="https://www.facebook.com/sharer.php?u=http://pieux.github.io/blog/2013/11/23/macro-and-defmacro-in-emacs/" title="Share macro &amp; defmacro in Emacs on Facebook">
+    <img src="/images/social/facebook.png" />
+  </a>
+</li>
+ -->
+	  <!--   <li>
+  <a href="https://plus.google.com/share?url=http://pieux.github.io/blog/2013/11/23/macro-and-defmacro-in-emacs/" title="Share macro &amp; defmacro in Emacs on Google Plus">
+    <img src="/images/social/google.png" />
+  </a>
+</li>
+ -->
+	  <!-- </ul> -->
+	</div>
+
+
+
+</div>
+	<footer id="footer" class="inner"><br>
+<br>
+<br>
+<br>
+&copy; 2013
+
+    Pieux Xi
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/hyphenator.js"></script>
+
+
+
+
+
+
+
+</body>
+<script>
+  $(document).ready(function() {
+  // Make images center
+  $('p:has(img)').css('text-align', 'center');
+  });
+</script>
+</html>

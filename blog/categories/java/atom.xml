@@ -1,0 +1,813 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Java | POEMS]]></title>
+  <link href="http://pieux.github.io/blog/categories/java/atom.xml" rel="self"/>
+  <link href="http://pieux.github.io/"/>
+  <updated>2013-12-21T20:21:41+08:00</updated>
+  <id>http://pieux.github.io/</id>
+  <author>
+    <name><![CDATA[Pieux Xi]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Things about Tomcat SSL Certification and CAS(SAML)]]></title>
+    <link href="http://pieux.github.io/blog/2013/12/12/things-about-tomcat-ssl-certification-and-cas-saml/"/>
+    <updated>2013-12-12T03:07:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/12/12/things-about-tomcat-ssl-certification-and-cas-saml</id>
+    <content type="html"><![CDATA[<p>这里是对Tomcat配置证书（生成/导出/导入）的 spike 总结。也不一定是总结
+啦。</p>
+
+<p>会总结哪些方面呢？</p>
+
+<ol>
+<li>keytool 相关的命令和作用；</li>
+<li>Tomcat 的 SSL 配置；</li>
+<li>什么是证书？</li>
+<li>服务端和客户端都在本地的配置（开发配置）；</li>
+<li>服务端部署在其他域名上；</li>
+<li>etc.</li>
+</ol>
+
+
+<p>目前想到的几个问题：
+&ndash; <code>~/.keystore</code>，为什么 client 会找这个文件？</p>
+
+<ul>
+<li><code>self-signed certificate</code></li>
+</ul>
+
+
+<h2>CAS Java Client 配置 SAML 1.1</h2>
+
+<p>在 client 需要添加这些依赖：</p>
+
+<ul>
+<li>cas-client-core-3.1.3.jar</li>
+<li>commons-codec-1.4.jar</li>
+<li>commons-logging-1.1.jar</li>
+<li>opensaml-1.1.jar</li>
+<li>xmlsec-1.4.0.jar</li>
+<li>log4j-1.2.15.jar</li>
+</ul>
+
+
+<p>关于版本，core的话，目前最新的是 3.2。opensaml肯定使用 1.1，因为是
+SAML1.1 协议。</p>
+
+<p>其他几个包是什么呢？不需要深入了解，从名称猜测，commons-codec 提供了一
+些 encode，decode 方法。xmlsec 应该是安全的XML。</p>
+
+<p>cas-client-core
+<a href="http://mvnrepository.com/artifact/org.jasig.cas">http://mvnrepository.com/artifact/org.jasig.cas</a></p>
+
+<p>commons-codec
+<a href="http://mvnrepository.com/artifact/commons-codec/commons-codec">http://mvnrepository.com/artifact/commons-codec/commons-codec</a></p>
+
+<p>opensaml
+<a href="http://mvnrepository.com/artifact/org.opensaml/opensaml/1.1">http://mvnrepository.com/artifact/org.opensaml/opensaml/1.1</a></p>
+
+<p>xmlsec
+<a href="http://mvnrepository.com/artifact/org.apache.santuario/xmlsec">http://mvnrepository.com/artifact/org.apache.santuario/xmlsec</a></p>
+
+<h2>Tomcat 配置 SSL</h2>
+
+<p>关于 Tomcat 配置 SSL</p>
+
+<h3>什么是 SSL?</h3>
+
+<blockquote><p>主要参考文章 <a href="http://www.sunchis.com/html/java/javaweb/2010/0313/68.html">SSL简介</a></p></blockquote>
+
+<p>SSL(Server Socket Layer)</p>
+
+<blockquote><p>SSL（Server Socket Layer）是一种保证网络上的两个节点进行安全通信的协议。IETF（Internet Engineering Task Force）组织对SSL作了标准化，制订了RFC2246规范，并将其称为TLS（Transport Layer Security）。从技术上讲，目前TLS 1.0与TLS 3.0的差别非常微小。</p></blockquote>
+
+<p>从引用看出一个经常看到的术语：TLS，就是标准化的 SSL 通信协议。换句话说，
+TLS 是基于 SSL 开发的。准确地说，TLS 1.0 替代了 SSL 2.0，并且 TLS 1.0
+和 SSL 3.0 的差别不大，但不能忽操作。</p>
+
+<p>这方面的参考链接：</p>
+
+<ol>
+<li><p><a href="http://luxsci.com/blog/ssl-versus-tls-whats-the-difference.html">SSL versus TLS – What’s the difference?</a></p></li>
+<li><p><a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa380515(v=vs.85).aspx">TLS vs. SSL</a></p></li>
+<li><p><a href="http://www.cnblogs.com/adforce/archive/2012/11/27/2790937.html">SSL/TLS 协议详解</a></p></li>
+</ol>
+
+
+<p>SSL和TLS建立在TCP/IP协议的基础上，一些应用层协议，如HTTP和IMAP协议都可
+以采用SSL来保证通信的安全。建立在SSL协议上的HTTP被称为HTTPS协议。HTTP
+使用的默认端口为80，而HTTPS使用的默认端口为443。</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">协议层</th>
+<th align="center">协议</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">应用层</td>
+<td align="center">HTTP、IMAP、NNTP、Telnet、FTP等</td>
+</tr>
+<tr>
+<td align="center">安全套接字层</td>
+<td align="center">SSL、TLS</td>
+</tr>
+<tr>
+<td align="center">传输层</td>
+<td align="center">TCP</td>
+</tr>
+<tr>
+<td align="center">网络层</td>
+<td align="center">IP</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>SSL采用加密技术来实现安全通信，保证通信数据的保密性和完整性，并且保证
+通信双方可以验证对方的身份。</p>
+
+<h3>SSL 中的证书</h3>
+
+<p>除了对数据通信进行加密外，SSL还采用了身份认证机制，确保通信双方都可以
+验证对方的真实身份。</p>
+
+<p>SSL通过安全证书来证明客户或服务器的身份。当客户通过安全的连接和服务器
+通信时，服务器会先向客户出示它的安全证书，这个证书声明该服务器是安全的，
+而且的确是这个服务器。每一个证书在全球范围内都是唯一的，其他非法服务器
+无法假冒原始服务器的身份。可以把安全证书比做电子身份证。</p>
+
+<p>获取安全证书是一件麻烦的事情。一些服务器会向客户出示自己的安全证书，但
+另一方面，为了扩大客户群并且便于客户访问，许多服务器不要求客户出示安全
+证书。在某些情况下，服务器也会要求客户出示安全证书，以便核实客户的身份，
+这主要用于B2B（Business to Business）事务中。</p>
+
+<p>获取安全证书有两种方式，一种方式是从权威机构购买证书，还有一种方式是创建自我签名的证书。</p>
+
+<p><strong>1 从权威机构获得证书</strong></p>
+
+<p>安全证书可以有效地保证通信双方身份的可信性。安全证书采用加密技术制作而
+成，他人几乎无法伪造。安全证书由国际权威的证书机构（Certificate
+Authority，CA）如VeriSign（www.verisign.com）和Thawte（www.thawte.com）
+颁发，它们保证了证书的可信性。申请安全证书时，必须支付一定的费用。一个
+安全证书只对一个IP地址有效，如果用户的系统环境中有多个IP，那么必须为每
+个IP地址购买安全证书。</p>
+
+<p><strong>2 创建自我签名证书</strong></p>
+
+<p>在某些场合，通信双方只关心数据在网络上可以安全传输，并不需要对对方进行
+身份验证，在这种情况下，可以创建自我签名（self-assign）的证书，比如通
+过SUN公司提供的keytool工具就可以创建这样的证书。</p>
+
+<p>即，只需要数据加密传输，而不需要额外的一层身份校验。</p>
+
+<h2>使用 keytool 工具</h2>
+
+<p>这方面的参考文章很多。</p>
+
+<p>对于 .Net，请参考：
+<a href="http://www.cnblogs.com/zhenyulu/archive/2013/01/22/2870838.html">Yale CAS + .net Client 实现 SSO（1）</a></p>
+
+<p>对于 Java，请参考：
+<a href="http://blog.csdn.net/small_love/article/details/6664831">CAS实现单点登录（SSO）经典完整教程</a>
+。</p>
+
+<p>这里唯一需要注意的一点是：生成证书时，要求输入名称和姓氏(First Name
+and Last Name)时，需要输入部署 cas server 的计算机名，比如：
+pieux-macbook-pro.local 或者 tech-w-xishanshan。在后面的配置 cas
+client 的 Authentication Filter 和 Validation Filter 时，配置的服务器
+地址应该也是以计算机名开头，不要使用 localhost 或者 ip：</p>
+
+<p>```
+&lt;init-param></p>
+
+<pre><code>&lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
+&lt;param-value&gt;https://pieux-macbook-pro.local:8443/cas/login&lt;/param-value&gt;
+</code></pre>
+
+<p>&lt;/init-param>
+&hellip;
+&lt;filter-name>CAS Validation Filter&lt;/filter-name>
+&lt;filter-class>org.jasig.cas.client.validation.Saml11TicketValidationFilter&lt;/filter-class>
+&lt;init-param></p>
+
+<pre><code>&lt;param-name&gt;casServerUrlPrefix&lt;/param-name&gt;
+&lt;param-value&gt;https://pieux-macbook-pro.local:8443/cas&lt;/param-value&gt;
+</code></pre>
+
+<p>&lt;/init-param>
+```</p>
+
+<h2>自我签名证书在开发中的注意事项</h2>
+
+<p>如果 cas server 和 cas client 都部署在相同的机器上（一般是开发过程中），
+那如果你按照上面和上面提到的参考文章的步骤，就应该不会有错误了。</p>
+
+<p>但是，有一个大坑。如果 cas server 和 cas client 不是部署在一台机器上，
+你很有可能会遇到一个<strong>异常</strong>是：</p>
+
+<p><code>
+sun.security.validator.ValidatorException: PKIX path building failed:
+</code></p>
+
+<p> The problem here is that the CAS client does not trust the
+ certificate presented by the CAS server; most often this occurs
+ because of using a self-signed certificate on the CAS server.</p>
+
+<p>该问题一般是 cas client 不信任 cas server 展示的证书，而且绝大多数情况
+下（按我目前遇到的，就是所有情况下），是 cas server 向 client 展示的是
+self-signed certificate。</p>
+
+<p>而且，使用SAML11的时候会报错（难道是SAML11也需要检验证书的真实性？），
+使用CAS20就不会报错。因为按理说，SSL可以不需要证书，只利用加密通信的特
+性。这块持续挖掘下。</p>
+
+<p>那怎么解决这个问题呢？很简单，让 client 信任 server 的证书就行了。把
+server 端生成的证书拷贝到 client 端部署的机器上，然后用 keytool 工具导
+入到 client 机器 JDK 的 cacerts 里。</p>
+
+<h2>SSL握手通信过程</h2>
+
+<blockquote><p>主要参考文章 <a href="http://www.sunchis.com/html/java/javaweb/2010/0313/68.html">SSL握手通信过程</a></p></blockquote>
+
+<p>暂时先不了解。</p>
+
+<h2>什么是 <code>.keystore</code> 文件？</h2>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[NOTE: Everything about CAS]]></title>
+    <link href="http://pieux.github.io/blog/2013/12/08/note-everything-about-cas/"/>
+    <updated>2013-12-08T02:12:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/12/08/note-everything-about-cas</id>
+    <content type="html"><![CDATA[<p>假设 CAS Server 的域名是 cas.server.com</p>
+
+<p>CAS Server 的 webapp 是 spring web flow，登陆地址为：<a href="https://cas.server.com/cas/login">https://cas.server.com/cas/login</a></p>
+
+<p>登出地址为：<a href="https://cas.server.com/cas/logout">https://cas.server.com/cas/logout</a></p>
+
+<p>语言参数为：locale=zh_CN，locale=en</p>
+
+<p>除了配置 CAS Server 和 Client 外，需要配置环境，包括生成和导出导入证书，Tomcat配置SSL等。</p>
+
+<h2>CAS Server</h2>
+
+<h3>原理（认证流程）</h3>
+
+<p><img src="http://i.imgur.com/MDSRTIc.jpg" alt="CAS 基本模式" /></p>
+
+<p><strong>原理</strong>：按照此图来说</p>
+
+<ol>
+<li><p>用户访问CAS Client</p></li>
+<li><p>其配置的 AuthenticationFilter 会拦截此请求，生成 service 参数，并重定向到 CAS Server 的登陆接口，url为 <a href="https://cas.server.com/login?service=redirect_url">https://cas.server.com/login?service=redirect_url</a></p></li>
+<li><p>用户在 CAS Server 输入 Credentials(一般就是用户名和密码)进行身份验证，成功后，CAS Server 会生成认证 cookie，即TGC。（另：TGC作为 cookie之外，也会换存在服务器本地，我猜测是不是服务器运行实例的内存中。）</p></li>
+<li><p>CAS Server还会根据 service 参数，生成 Ticket，即ST。ST会保存在服务器，也会加在 url 后面，重定向回 client。url为 <a href="http://client_server_url:port/app_name?ticket=ST-*-*">http://client_server_url:port/app_name?ticket=ST-*-*</a></p></li>
+<li><p>Client 的 AuthenticationFilter 看到 ticket 参数后，会跳过，交由后面的 TicketValidationFilter 来处理。TicketValidationFilter 会利用 httpclient 工具访问 cas server 的 /serviceValidate 接口，将 ticket, service 传入该接口，验证 ticket 的有效性。</p></li>
+<li><p>如果返回验证成功，就会把用户信息写入 client 的 session 里。</p></li>
+</ol>
+
+
+<p>至此，SSO 会话就建立起来了。</p>
+
+<p>结果就是：</p>
+
+<ol>
+<li><p>用户在同一浏览器访问同一 client，不会去 CAS Server 认证，因为 AuthenticationFilter 会在 session 读取到用户信息。</p></li>
+<li><p>用户在同一浏览器访问其他 client，AuthenticationFilter 在 session 里读不到用户信息，会去 cas login 接口认证，但是此时 cas login 接口会读取到存储在cas server域名下的 TGC，所以，CAS Server不会跳到登录页，只会根据 service 参数生成一个 ticket，传给 client。然后由TicketValidationFilter做一次交互验证。</p></li>
+</ol>
+
+
+<h3>CAS Server 提供的接口</h3>
+
+<p>cas server 一共定义了9个接口。client 会通过 url redirect 和 httpclient 的方式和 server 交互。</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">接口 </th>
+<th align="left"> 说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">/login        </td>
+<td align="left"> 认证接口</td>
+</tr>
+<tr>
+<td align="center">/logout       </td>
+<td align="left"> 退出接口，销毁 TGC</td>
+</tr>
+<tr>
+<td align="center">/validate     </td>
+<td align="left"> 验证 ticket 接口，CAS1.0</td>
+</tr>
+<tr>
+<td align="center">/serviceValidate </td>
+<td align="left"> 同上，CAS2.0</td>
+</tr>
+<tr>
+<td align="center">/proxy        </td>
+<td align="left"> 支持代理功能的接口</td>
+</tr>
+<tr>
+<td align="center">/proxyValidate </td>
+<td align="left"> 同上</td>
+</tr>
+<tr>
+<td align="center">/CentralAuthenticationService </td>
+<td align="left"> 用于和远程的 web services 交互</td>
+</tr>
+<tr>
+<td align="center">/remoteLogin  </td>
+<td align="left"> 认证接口（新增）</td>
+</tr>
+<tr>
+<td align="center">/directLogin  </td>
+<td align="left"> 认证接口（新增）</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>认证相关的术语</h2>
+
+<ul>
+<li><p><strong>Credentials</strong> 用户提供的凭证，比如 用户名/密码，证书，IP地址，Cookie值等。</p></li>
+<li><p><strong>AuthenticationHandler</strong> 认证Handler，比如：AbstractUsernamePasswordAuthenticationHandler 负责处理 UsernamePasswordCredentials.</p></li>
+<li><p><strong>CredentialsToPrincipalResolvers</strong> 负责由 Credentials 生成 Principal 对象，每种 CredentialsToPrincipalResolvers 只处理 一种Credentials ，比如 UsernamePasswordCredentialsToPrincipalResolver 负责从 UsernamePasswordCredentials 中取出用户名，然后将其赋给生成的 SimplePrincipal 的 ID 属性。</p></li>
+<li><p><strong>AuthenticationMetaDataPopulators</strong> 负责将 Credentials 的一些属性赋值给 Authentication 的 attributes 属性。</p></li>
+<li><p><strong>Authentication</strong>  Authentication是认证管理器的最终处理结果， Authentication 封装了 Principal ，认证时间，及其他一些属性（可能来自 Credentials）。</p></li>
+<li><p><strong>AuthenticationManager</strong> 认证管理器得到 Credentials 对象后，负责调度AuthenticationHandler 去完成认证工作，最后返回的结果是 Authentication 对象。</p></li>
+<li><p><strong>CentralAuthenticationService</strong> CAS 的服务类，对 Web 层提供了一些方法。该类还负责调用 AuthenticationManager 完成认证逻辑。</p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Maven Archetype Plugin]]></title>
+    <link href="http://pieux.github.io/blog/2013/12/08/maven-archetype-plugin/"/>
+    <updated>2013-12-08T01:31:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/12/08/maven-archetype-plugin</id>
+    <content type="html"><![CDATA[<h2>Struts 2 Maven Archetype</h2>
+
+<h3>The Blank Archetype (struts2-archetype-blank)</h3>
+
+<h3>The Starter Archetype (struts2-archetype-starter)</h3>
+
+<p>Compared to the former, it adds more features like &ldquo;Spring Integration&rdquo;.</p>
+
+<h3>The Blank Convention Archetype (struts2-archetype-convention)</h3>
+
+<p>Features like &ldquo;Convention-based validation&rdquo;, &ldquo;GAE aware&rdquo;.</p>
+
+<h2>Creating an Application Using a Maven Archetyp</h2>
+
+<p>```
+mvn archetype:generate -B \</p>
+
+<pre><code>                   -DgroupId=tutorial \
+                   -DartifactId=tutorial \
+                   -DarchetypeGroupId=org.apache.struts \
+                   -DarchetypeArtifactId=struts2-archetype-blank \
+                   -DarchetypeVersion=&lt;version&gt;
+</code></pre>
+
+<p>```</p>
+
+<p>If the above command will fail because of missing archetypes in central repository, you can try to use staging repository like below</p>
+
+<p><code>
+mvn archetype:generate -DarchetypeCatalog=http://people.apache.org/builds/struts/&lt;version&gt;/m2-staging-repository/
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[NOTE: CAS Java Client]]></title>
+    <link href="http://pieux.github.io/blog/2013/12/05/note-cas-java-client/"/>
+    <updated>2013-12-05T08:43:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/12/05/note-cas-java-client</id>
+    <content type="html"><![CDATA[<h1>CAS Client for Java 3.1</h1>
+
+<h2>通过 web.xml 配置 Jasig CAS Client for Java</h2>
+
+<p>CAS Client for Java 3.1/3.2 可以通过配置 web.xml 里的 context-params 和 filter init-params。每个 filter 都需要配置一系列的属性（properties）。filters 会查找这些属性：</p>
+
+<ol>
+<li>首先检查 filter 的本地 init-params（local init-params），看是否有相符合的属性名；</li>
+<li>其次检查 context 的参数 ，看是否有相符合的属性名；</li>
+</ol>
+
+
+<p>如果在 filter 的 init-params 和 context 的参数中找到相同的值，则选用 init-params。</p>
+
+<p>同样，filter 的顺序为：</p>
+
+<ol>
+<li>SingleLogOutFilter (if you&rsquo;re using it)</li>
+<li>AuthenticationFilter</li>
+<li>TicketValidationFilter (whichever one is chosen)</li>
+<li>HttpServletRequestWrapperFilter</li>
+<li>AssertionThreadLocalFilter</li>
+</ol>
+
+
+<blockquote><p>! 如果使用 serverName 属性，请注意 fragment-URL(#后的 URL)不会发送给服务器。</p></blockquote>
+
+<p>一一介绍可用的 filters:</p>
+
+<h3>org.jasig.cas.client.authentication.AuthenticationFilter</h3>
+
+<p>AuthenticationFilter 判断一个用户是否需要验证。如果需要，则重定向到 CAS server。</p>
+
+<p>```
+<filter>
+  &lt;filter-name>CAS Authentication Filter&lt;/filter-name>
+  &lt;filter-class>org.jasig.cas.client.authentication.AuthenticationFilter&lt;/filter-class>
+  &lt;init-param></p>
+
+<pre><code>&lt;!--cas server login url--&gt;
+&lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
+&lt;param-value&gt;https://battags.ad.ess.rutgers.edu:8443/cas/login&lt;/param-value&gt;
+</code></pre>
+
+<p>  &lt;/init-param>
+  &lt;init-param></p>
+
+<pre><code>&lt;!--cas server name--&gt;
+&lt;param-name&gt;serverName&lt;/param-name&gt;
+&lt;param-value&gt;http://www.acme-client.com&lt;/param-value&gt;
+</code></pre>
+
+<p>  &lt;/init-param>
+</filter>
+```</p>
+
+<p><strong>Required Properties</strong></p>
+
+<ul>
+<li>casServerLoginUrl: CAS server 的登录页地址，i.e. <a href="https://localhost:8443/cas/login">https://localhost:8443/cas/login</a></li>
+<li>service or serverName
+
+<ul>
+<li>service: 发送给 CAS server 的服务的 URL，e.g. <a href="https://localhost:8443/yourwebapp/index.html">https://localhost:8443/yourwebapp/index.html</a></li>
+<li>serverName: 应用部署的服务器名。service URL 会据此动态生成。i.e. <a href="https://localhost:8443">https://localhost:8443</a> (需要指定协议，如果是标准端口，则端口可隐式)。</li>
+</ul>
+</li>
+</ul>
+
+
+<p><strong>Optional Properties</strong>:</p>
+
+<p>有 <em>renew</em>, <em>gateway</em>, <em>artifactParameterName</em>, <em>serviceParameterName</em>。</p>
+
+<h3>org.jasig.cas.client.authentication.Saml11AuthenticationFilter</h3>
+
+<p>猜测是支持 SAML 1.1 的 authentication filter。</p>
+
+<p>```
+<filter>
+  &lt;filter-name>CAS Authentication Filter&lt;/filter-name>
+  &lt;filter-class>org.jasig.cas.client.authentication.AuthenticationFilter&lt;/filter-class>
+  &lt;init-param></p>
+
+<pre><code>&lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
+&lt;param-value&gt;https://battags.ad.ess.rutgers.edu:8443/cas/login&lt;/param-value&gt;
+</code></pre>
+
+<p>  &lt;/init-param>
+  &lt;init-param></p>
+
+<pre><code>&lt;param-name&gt;serverName&lt;/param-name&gt;
+&lt;param-value&gt;http://www.acme-client.com&lt;/param-value&gt;
+</code></pre>
+
+<p>  &lt;/init-param>
+</filter>
+```</p>
+
+<h3>org.jasig.cas.client.validation.Saml11TicketValidationFilter</h3>
+
+<p>使用 SAML 1.1 协议验证 tickets。</p>
+
+<p>```
+<filter>
+  &lt;filter-name>CAS Validation Filter&lt;/filter-name>
+  &lt;filter-class>org.jasig.cas.client.validation.Saml11TicketValidationFilter&lt;/filter-class>
+  &lt;init-param></p>
+
+<pre><code>&lt;param-name&gt;casServerUrlPrefix&lt;/param-name&gt;
+&lt;param-value&gt;https://battags.ad.ess.rutgers.edu:8443/cas&lt;/param-value&gt;
+</code></pre>
+
+<p>  &lt;/init-param>
+  &lt;init-param></p>
+
+<pre><code>&lt;param-name&gt;serverName&lt;/param-name&gt;
+&lt;param-value&gt;http://www.acme-client.com&lt;/param-value&gt;
+</code></pre>
+
+<p>  &lt;/init-param>
+ </filter>
+```</p>
+
+<p><strong>Required Properties</strong></p>
+
+<ul>
+<li>casServerUrlPrefix: CAS 服务器的URL起始页，i.e. <a href="https://localhost:8443/cas">https://localhost:8443/cas</a></li>
+<li>serverName or service: 同上</li>
+</ul>
+
+
+<p><strong>Optional Properties</strong></p>
+
+<ul>
+<li>redirectAfterValidation (default: true)</li>
+<li>useSession (default: true)</li>
+<li>exceptionOnValidationFailure (default: true)</li>
+<li>tolerance (default: 1000 mSec)</li>
+<li>renew (default: false)</li>
+</ul>
+
+
+<h3>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</h3>
+
+<p>Wraps an HttpServletRequest so that the getRemoteUser and getPrincipal return the CAS related entries.</p>
+
+<p>包裹 HttpServletRequest，使 getRemoteUser 和 getPrincipal 返回 CAS 相关的入口。</p>
+
+<p><code>
+&lt;filter&gt;
+  &lt;filter-name&gt;CAS HttpServletRequest Wrapper Filter&lt;/filter-name&gt;
+  &lt;filter-class&gt;org.jasig.cas.client.util.HttpServletRequestWrapperFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+</code></p>
+
+<p><strong>Required Properties</strong></p>
+
+<p>None</p>
+
+<p><strong>Optional Properties</strong></p>
+
+<p>None</p>
+
+<h3>org.jasig.cas.client.util.AssertionThreadLocalFilter</h3>
+
+<p>Places the Assertion in a ThreadLocal for portions of the application that need access to it. This is useful when the Web application that this filter &ldquo;fronts&rdquo; needs to get the Principal name, but it has no access to the HttpServletRequest, hence making getRemoteUser() call impossible.</p>
+
+<p>把这个 Assertion 放进 ThreadLocal 中，因为有些应用可能需要。比如：当 Web 应用需要拿到 Principal 的名字，但是它无法访问 HttpServletRequest，因此 getRemoteUser() 没有用。</p>
+
+<blockquote><p>! 没搞懂什么意思，猜测是 CAS Client 应用想要拿到登陆的用户名，但是用户名存储在 CAS Server 上。这个 filter 的作用就是把 Principal 放到 ThreadLocal 变量中。</p></blockquote>
+
+<p><code>
+&lt;filter&gt;
+  &lt;filter-name&gt;CAS Assertion Thread Local Filter&lt;/filter-name&gt;
+  &lt;filter-class&gt;org.jasig.cas.client.util.AssertionThreadLocalFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+</code></p>
+
+<p>e.g. 一份稍完整的 CAS Client for Java 的 web.xml（未使用 SAML 1.1，为 CAS 协议）</p>
+
+<p>```
+&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;ISO-8859-1&rdquo;?>
+&lt;web-app xmlns=&ldquo;<a href="http://java.sun.com/xml/ns/j2ee">http://java.sun.com/xml/ns/j2ee</a>&rdquo; xmlns:xsi=&ldquo;<a href="http://www.w3.org/2001/XMLSchema-instance">http://www.w3.org/2001/XMLSchema-instance</a>&rdquo;</p>
+
+<pre><code>xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+version="2.4"&gt;
+
+&lt;display-name&gt;CAS client demo : application&lt;/display-name&gt;
+
+&lt;filter&gt;
+    &lt;!--配置 AuthenticationFilter--&gt;
+    &lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+    &lt;filter-class&gt;org.jasig.cas.client.authentication.AuthenticationFilter&lt;/filter-class&gt;
+    &lt;init-param&gt;
+        &lt;!--property: 登陆页配置--&gt;
+        &lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
+        &lt;param-value&gt;http://localhost:8080/cas/login&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;!--property: 部署服务器地址--&gt;
+        &lt;param-name&gt;serverName&lt;/param-name&gt;
+        &lt;param-value&gt;http://localhost:8080&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;!-- init-param&gt;
+        &lt;param-name&gt;service&lt;/param-name&gt;
+        &lt;param-value&gt;http://localhost:8080/default.jsp&lt;/param-value&gt;
+    &lt;/init-param--&gt;
+&lt;/filter&gt;
+
+&lt;filter&gt;
+    &lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+    &lt;filter-class&gt;org.jasig.cas.client.validation.Cas10TicketValidationFilter&lt;/filter-class&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;casServerUrlPrefix&lt;/param-name&gt;
+        &lt;param-value&gt;http://localhost:8080/cas&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;serverName&lt;/param-name&gt;
+        &lt;param-value&gt;http://localhost:8080&lt;/param-value&gt;
+    &lt;/init-param&gt;
+&lt;/filter&gt;
+
+&lt;filter-mapping&gt;
+    &lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+    &lt;url-pattern&gt;/protected/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+
+&lt;filter-mapping&gt;
+    &lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+    &lt;url-pattern&gt;*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+</code></pre>
+
+<p>&lt;/web-app>
+```</p>
+
+<p>e.g. 使用 SAML 1.1</p>
+
+<p>```
+&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;ISO-8859-1&rdquo;?>
+&lt;web-app xmlns=&ldquo;<a href="http://java.sun.com/xml/ns/j2ee">http://java.sun.com/xml/ns/j2ee</a>&rdquo; xmlns:xsi=&ldquo;<a href="http://www.w3.org/2001/XMLSchema-instance">http://www.w3.org/2001/XMLSchema-instance</a>&rdquo;</p>
+
+<pre><code>xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+version="2.4"&gt;
+
+&lt;display-name&gt;CAS client demo : application&lt;/display-name&gt;
+
+&lt;filter&gt;
+    &lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+    &lt;filter-class&gt;org.jasig.cas.client.authentication.Saml11AuthenticationFilter&lt;/filter-class&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
+        &lt;param-value&gt;http://localhost:8080/cas/login&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;serverName&lt;/param-name&gt;
+        &lt;param-value&gt;http://localhost:8080&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;onlyFullyAuthenticated&lt;/param-name&gt;
+        &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/init-param&gt;
+&lt;/filter&gt;
+
+&lt;filter&gt;
+    &lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+    &lt;filter-class&gt;org.jasig.cas.client.validation.Saml11TicketValidationFilter&lt;/filter-class&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;casServerUrlPrefix&lt;/param-name&gt;
+        &lt;param-value&gt;http://localhost:8080/cas&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;serverName&lt;/param-name&gt;
+        &lt;param-value&gt;http://localhost:8080&lt;/param-value&gt;
+    &lt;/init-param&gt;
+&lt;/filter&gt;
+
+&lt;filter-mapping&gt;
+    &lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+    &lt;url-pattern&gt;/protected/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+
+&lt;filter-mapping&gt;
+    &lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+    &lt;url-pattern&gt;*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+</code></pre>
+
+<p>&lt;/web-app>
+```</p>
+
+<h2>配置单点登出 Single Sign Out</h2>
+
+<blockquote><p>! <em>SingleSignOutFilter</em> 会影响到 character encoding。建议显式地配置下 <a href="http://code.google.com/p/vt-middleware/wiki/vtservletfilters#CharacterEncodingFilter">VT Character Encoding Filter</a> 或 <a href="http://static.springsource.org/spring/docs/2.0.x/api/org/springframework/web/filter/CharacterEncodingFilter.html">Spring Character Encoding Filter</a>。</p></blockquote>
+
+<p>CAS 对 Single Sign Out support 的支持，涉及到对一个 filter 和一个 ContextListener 的配置。需要注意的一点是，如果以 Web filters 的形式为 Java 配置 CAS Client，登出的 filter 需要在其他 filters 前面。</p>
+
+<p><strong>PS</strong>: Order of Required Filters <a href="https://wiki.jasig.org/display/CASC/CAS+Client+for+Java+3.1">全文链接</a>
+Order of Required Filters</p>
+
+<p>How to configure the filters is described on the pages above. This section details the order in which the filters should appear:</p>
+
+<ol>
+<li>SingleLogOutFilter (if you&rsquo;re using it)</li>
+<li>AuthenticationFilter</li>
+<li>TicketValidationFilter (whichever one is chosen)</li>
+<li>HttpServletRequestWrapperFilter</li>
+<li>AssertionThreadLocalFilter</li>
+</ol>
+
+
+<p>```
+<listenerclass></p>
+
+<pre><code>org.jasig.cas.client.session.SingleSignOutHttpSessionListener&lt;/listener-class&gt;
+</code></pre>
+
+<p></listener>
+```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[NOTE: Special Things about CAS]]></title>
+    <link href="http://pieux.github.io/blog/2013/12/05/note-special-things-about-cas/"/>
+    <updated>2013-12-05T02:49:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/12/05/note-special-things-about-cas</id>
+    <content type="html"><![CDATA[<h1>1</h1>
+
+<p><strong>Create the Certificate</strong></p>
+
+<p>打开终端，进到 home 目录，运行命令：</p>
+
+<p><code>
+keytool -genkey -alias tomcat -keyalg RSA -validity 365
+</code></p>
+
+<p>需要输入：</p>
+
+<p><code>
+Enter keystore password:
+Re-enter new password:
+What is your first and last name?
+What is the name of your organizational unit?
+What is the name of your organization?
+What is the name of your City or Locality?
+What is the name of your State or Province?
+What is the two-letter country code for this unit?
+Is CN=$FULL_MACHINE_NAME, OU=Test, O=Test, L=Test, ST=Test, C=US correct?
+</code></p>
+
+<p>如何给这些值？</p>
+
+<p>For the keystore password you should enter &ldquo;changeit&rdquo; without the quotation marks. When prompted for the first and last name, you should enter your machine name during development. The rest of the data does not matter. Then obviously answer &ldquo;yes&rdquo; to the question of whether it&rsquo;s correct.</p>
+
+<blockquote><p>注意： CAS 协议需要走 HTTPS，为了保证能够工作， &ldquo;first and last name&rdquo; 为 $FULL_MACHINE_NAME。Mac 上获取计算机全名的方法是：<code>scutil --get ComputerName</code> 或者 <code>scutil --get LocalHostName</code>。</p></blockquote>
+
+<p>下一步，打开 <code>$TOMCAT_HOME/conf/server.xml</code>，找到这一块，去掉注释即可：</p>
+
+<p>```</p>
+
+<!--
+<Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
+    maxThreads="150" scheme="https" secure="true"
+    clientAuth="false" sslProtocol="TLS" />
+-->
+
+
+<p>```</p>
+
+<p>重启 Tomcat，访问</p>
+
+<p><code>
+https://$FULL_MACHINE_NAME:8443/
+</code></p>
+
+<p>Any application that wishes to securely connect to this Tomcat instance would need to import the certificate. You can export the certificate that&rsquo;s compatible with other JVM keystores by executing the following command:</p>
+
+<p>所有想访问该 Tomcat 实例的应用都需要导入证书。首先导出证书，需要输入 keystore 的密码，这里就是 changeit：</p>
+
+<p><code>
+keytool -export -alias tomcat -file server.crt
+</code></p>
+
+<p>输出是：</p>
+
+<p><code>
+Enter keystore password:
+Certificate stored in file &lt;server.crt&gt;
+</code></p>
+
+<p>You can then import the server.crt into other JVM keystore&rsquo;s by executing a command similar to this:</p>
+
+<p><code>
+keytool -import -file server.crt -keystore $JAVA_HOME/jre/lib/security/cacerts -alias tomcat
+</code></p>
+
+<p>It&rsquo;s recommended that you add it to the JVM keystore of your local development machine to facilitate testing.</p>
+
+<h1>2</h1>
+
+<p><strong>Maven War Overlay</strong><sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></p>
+<div class="footnotes">
+<hr/>
+<ol>
+<li id="fn:1">
+<p><a href="https://wiki.jasig.org/display/CASUM/Best+Practice+-+Setting+Up+CAS+Locally+using+the+Maven+WAR+Overlay+Method">Best Practice &ndash; Setting Up CAS Locally using the Maven WAR Overlay Method</a><a href="#fnref:1" rev="footnote">&#8617;</a></p></li>
+</ol>
+</div>
+
+]]></content>
+  </entry>
+  
+</feed>

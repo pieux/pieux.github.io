@@ -1,0 +1,350 @@
+
+<!DOCTYPE HTML>
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<title>Linux Useful Tricks  | POEMS</title>
+
+	<meta name="author" content="Pieux Xi">
+
+<meta name="description" content="课后任务 使用vagrant搭建Linux虚拟机 官方网址 1 首先安装 virtualbox 2 安装vagrant 3 打开cmd，或者终端，运行以下命令，注意这一步会下载一个Linux发行版，大约3，400M吧。所以，你也可以用迅雷到网上下载下来，然后把 http://files. &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="POEMS" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">POEMS</a></h1>
+<span class="tagline">Young & Foolish</span>
+<!-- <nav id="main-nav"><ul>
+	<li><a href="/about">About</a></li>
+	<li><a href="/archives">Archives</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</nav> -->
+<!-- <nav id="mobile-nav"> -->
+<!-- 	<div class="alignleft menu"> -->
+<!-- 		<a class="button">Menu</a> -->
+<!-- 		<div class="container"><ul>
+	<li><a href="/about">About</a></li>
+	<li><a href="/archives">Archives</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</div> -->
+<!-- 	</div> -->
+<!-- </nav> -->
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<header>
+		<h2 class="title">Linux Useful Tricks</h2>
+		<div class="meta date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-29T08:18:00+08:00" pubdate data-updated="true">Nov 29<span>th</span>, 2013</time></div>
+	</header>
+	<div class="entry-content"><h2>课后任务</h2>
+
+<p>使用vagrant搭建Linux虚拟机</p>
+
+<p><a href="http://docs.vagrantup.com/v2/getting-started/index.html">官方网址</a></p>
+
+<p>1 首先安装 <a href="http://www.virtualbox.org/">virtualbox</a></p>
+
+<p>2 安装<a href="http://docs.vagrantup.com/v2/installation/">vagrant</a></p>
+
+<p>3 打开cmd，或者终端，运行以下命令，注意这一步会下载一个Linux发行版，大约3，400M吧。所以，你也可以用迅雷到网上下载下来，然后把 <code>http://files.vagrantup.com/precise32.box</code> 改成你文件的路径，比如我的是<code>file:///Users/pieux/Documents/o/precise32.box</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ vagrant init precise32 http://files.vagrantup.com/precise32.box
+</span><span class='line'>$ vagrant up</span></code></pre></td></tr></table></div></figure>
+
+
+<p>4 SSH 进入linux吧！<code>vagrant ssh</code>，退出就是 <code>exit</code></p>
+
+<p>5 关闭Linux的命令是，休眠<code>vagrant suspend</code>，或者关闭<code>vagrant halt</code>。</p>
+
+<h2>man 命令</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1    使用者在shell中可以操作的指令或可执行档
+</span><span class='line'>2 系統核心可呼叫的函数与工具等
+</span><span class='line'>3 一些常用的函数(function)与函数库(library)，大部分是C的函数库(libc)
+</span><span class='line'>4 装置档案的说明，通常在/dev下的档案
+</span><span class='line'>5 设定档或者是某些档案的格式
+</span><span class='line'>6 游戏(games)
+</span><span class='line'>7 惯例与协定等，例如Linux档案系统、网络协定、ASCII code等等的說明
+</span><span class='line'>8 系統管理員可用的管理指令
+</span><span class='line'>9 跟kernel有关的文件</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>tree 命令</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>tree
+</span><span class='line'>-a
+</span><span class='line'>-A
+</span><span class='line'>-C
+</span><span class='line'>man tree</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>shell 快捷键</h1>
+
+<p>编辑命令</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Ctrl + a ：移到命令行首
+</span><span class='line'>Ctrl + e ：移到命令行尾
+</span><span class='line'>Ctrl + f ：按字符前移（右向）
+</span><span class='line'>Ctrl + b ：按字符后移（左向）
+</span><span class='line'>Alt + f ：按单词前移（右向）
+</span><span class='line'>Alt + b ：按单词后移（左向）
+</span><span class='line'>Ctrl + u ：从光标处删除至命令行首
+</span><span class='line'>Ctrl + k ：从光标处删除至命令行尾
+</span><span class='line'>Ctrl + d ：删除光标处的字符
+</span><span class='line'>Ctrl + y ：粘贴至光标后</span></code></pre></td></tr></table></div></figure>
+
+
+<p>重新执行命令</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Ctrl + r：逆向搜索命令历史
+</span><span class='line'>Ctrl + g：从历史搜索模式退出
+</span><span class='line'>Ctrl + p：历史中的上一条命令
+</span><span class='line'>Ctrl + n：历史中的下一条命令</span></code></pre></td></tr></table></div></figure>
+
+
+<p>控制命令</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Ctrl + l：清屏
+</span><span class='line'>Ctrl + s：阻止屏幕输出
+</span><span class='line'>Ctrl + q：允许屏幕输出
+</span><span class='line'>Ctrl + c：终止命令
+</span><span class='line'>Ctrl + z：挂起命令</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>grep 命令</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grep
+</span><span class='line'>-v 反选
+</span><span class='line'>-E 正则
+</span><span class='line'>-i 忽略大小写
+</span><span class='line'>-n 加上行号</span></code></pre></td></tr></table></div></figure>
+
+
+<p>简单的正则表达式：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>^ 行首
+</span><span class='line'>$ 行尾
+</span><span class='line'>. 任意字符
+</span><span class='line'>* &gt;0个重复
+</span><span class='line'>+ &gt;1个重复
+</span><span class='line'>[Gg], [A-Za-z]
+</span><span class='line'>\&lt; 单词首
+</span><span class='line'>\&gt; 单词尾</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>进程相关</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ps -aux | grep process-name
+</span><span class='line'>pgrep
+</span><span class='line'>kill
+</span><span class='line'>pkill
+</span><span class='line'>killall</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>find</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>find -name
+</span><span class='line'>find -not -name
+</span><span class='line'>-i
+</span><span class='line'>-type fdl
+</span><span class='line'>-mindepth 3
+</span><span class='line'>-maxdepth 3
+</span><span class='line'>-exec ls -l {} \;
+</span><span class='line'>| xargs ls -l</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>其他</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>touch 创建文件
+</span><span class='line'>alias 别名
+</span><span class='line'>history
+</span><span class='line'>sudo !! 重执行上一条命令
+</span><span class='line'>cd - 进入之前的目录
+</span><span class='line'>wc
+</span><span class='line'>chmod 
+</span><span class='line'>du -hd 1
+</span><span class='line'>du -h --max-depth=1
+</span><span class='line'>Ctrl-Z 挂起
+</span><span class='line'>fg 恢复
+</span><span class='line'>&gt; .gitignore
+</span><span class='line'>&lt; .gitignore
+</span><span class='line'>mv filename.{old,new}
+</span><span class='line'>rm !(*.foo|*.bar|*.baz)</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>git 相关</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git add -A
+</span><span class='line'>git reset --soft
+</span><span class='line'>git reset --mixed
+</span><span class='line'>git reset --hard</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>学习资料推荐</h2>
+
+<p><a href="http://www.commandlinefu.com/commands/tagged/800/commandfu">http://www.commandlinefu.com/commands/tagged/800/commandfu</a></p>
+</div>
+
+</article>
+
+	
+	<div class="share">
+	  <!-- <ul> -->
+	  <!--   <li>
+  <a href="https://twitter.com/intent/tweet?text=Linux Useful Tricks by @&url=http://pieux.github.io/blog/2013/11/29/linux-useful-tricks/" title="Share Linux Useful Tricks on Twitter">
+    <img src="/images/social/twitter.png" />
+  </a>
+</li>
+ -->
+	  <!--   <li>
+  <a href="https://www.facebook.com/sharer.php?u=http://pieux.github.io/blog/2013/11/29/linux-useful-tricks/" title="Share Linux Useful Tricks on Facebook">
+    <img src="/images/social/facebook.png" />
+  </a>
+</li>
+ -->
+	  <!--   <li>
+  <a href="https://plus.google.com/share?url=http://pieux.github.io/blog/2013/11/29/linux-useful-tricks/" title="Share Linux Useful Tricks on Google Plus">
+    <img src="/images/social/google.png" />
+  </a>
+</li>
+ -->
+	  <!-- </ul> -->
+	</div>
+
+
+
+</div>
+	<footer id="footer" class="inner"><br>
+<br>
+<br>
+<br>
+&copy; 2013
+
+    Pieux Xi
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/hyphenator.js"></script>
+
+
+
+
+
+
+
+</body>
+<script>
+  $(document).ready(function() {
+  // Make images center
+  $('p:has(img)').css('text-align', 'center');
+  });
+</script>
+</html>

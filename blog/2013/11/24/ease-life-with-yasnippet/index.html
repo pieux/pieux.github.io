@@ -1,0 +1,195 @@
+
+<!DOCTYPE HTML>
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<title>Ease Life with YASnippet  | POEMS</title>
+
+	<meta name="author" content="Pieux Xi">
+
+<meta name="description" content="安装使用package-install，实际上可以写一个简易方法避免重复劳动： 1
+2
+3
+4
+5
+6
+(defun require-package (package) "Install given PACKAGE." (unless (package-installed-p package) ( &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="POEMS" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">POEMS</a></h1>
+<span class="tagline">Young & Foolish</span>
+<!-- <nav id="main-nav"><ul>
+	<li><a href="/about">About</a></li>
+	<li><a href="/archives">Archives</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</nav> -->
+<!-- <nav id="mobile-nav"> -->
+<!-- 	<div class="alignleft menu"> -->
+<!-- 		<a class="button">Menu</a> -->
+<!-- 		<div class="container"><ul>
+	<li><a href="/about">About</a></li>
+	<li><a href="/archives">Archives</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</div> -->
+<!-- 	</div> -->
+<!-- </nav> -->
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<header>
+		<h2 class="title">Ease Life With YASnippet</h2>
+		<div class="meta date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-24T01:44:00+08:00" pubdate data-updated="true">Nov 24<span>th</span>, 2013</time></div>
+	</header>
+	<div class="entry-content"><p>安装使用<code>package-install</code>，实际上可以写一个简易方法避免重复劳动：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(defun require-package (package)
+</span><span class='line'>  "Install given PACKAGE."
+</span><span class='line'>  (unless (package-installed-p package)
+</span><span class='line'>    (unless (assoc package package-archive-contents)
+</span><span class='line'>      (package-refresh-contents))
+</span><span class='line'>    (package-install package)))
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>学习下其中的1个function</p>
+
+<p><code>assoc</code> is a built-in function in `C source code&#8217;.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(assoc KEY LIST)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Return non-nil if KEY is `equal&#8217; to the car of an element of LIST.
+The value is actually the first element of LIST whose car equals KEY.</p>
+
+<p>开始学习如何使用YASnippet。</p>
+
+<p><strong>1 组织你的 Snippets</strong> (<em>Organizing Snippets</em>)</p>
+
+<p>Snippet的定义是储存在文件系统的文件中。YASnippet的触发机制会找到这些snippet tables，然后展开。</p>
+
+<p>首先，新建一个目录：my-snippets，用来存放自定义的snippets。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(require 'yasnippet)
+</span><span class='line'>
+</span><span class='line'>(setq yas-snippet-dirs (concat user-emacs-directory "my-snippets"))
+</span><span class='line'>
+</span><span class='line'>(add-hook 'prog-mode-hook 'yas-minor-mode)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看下是怎么组织snippets的（这是YASnippet自带的）：</p>
+
+<p><code>.yas.parent</code>文件可以共享其他目录下的snippets。</p>
+
+<p>如果有一个空的<code>.yas-make-groups</code>文件，会在 YASnippet Menu按照目录结构组织地更清晰。</p>
+
+<p><strong>2 展开你的 Snippets</strong> (<em>Traiggering expansion</em>)</p>
+
+<p>很多中方式能展开snippets，包括：</p>
+
+<ul>
+<li><p>By typing an abbrev, the snippet trigger key, and then pressing the key defined in yas/trigger-key (which defaults to &ldquo;TAB&rdquo;). This works in buffers where the minor mode yas/minor-mode is active;</p></li>
+<li><p>By invoking the command yas/insert-snippet (either by typing M-x yas/insert-snippet or its keybinding). This does not require yas/minor-mode to be active.</p></li>
+<li><p>By using hippie-expand</p></li>
+</ul>
+
+
+<p>以上是3中最常见的方法（虽然我不知道什么是 hippie-expand）。</p>
+</div>
+
+</article>
+
+	
+	<div class="share">
+	  <!-- <ul> -->
+	  <!--   <li>
+  <a href="https://twitter.com/intent/tweet?text=Ease Life with YASnippet by @&url=http://pieux.github.io/blog/2013/11/24/ease-life-with-yasnippet/" title="Share Ease Life with YASnippet on Twitter">
+    <img src="/images/social/twitter.png" />
+  </a>
+</li>
+ -->
+	  <!--   <li>
+  <a href="https://www.facebook.com/sharer.php?u=http://pieux.github.io/blog/2013/11/24/ease-life-with-yasnippet/" title="Share Ease Life with YASnippet on Facebook">
+    <img src="/images/social/facebook.png" />
+  </a>
+</li>
+ -->
+	  <!--   <li>
+  <a href="https://plus.google.com/share?url=http://pieux.github.io/blog/2013/11/24/ease-life-with-yasnippet/" title="Share Ease Life with YASnippet on Google Plus">
+    <img src="/images/social/google.png" />
+  </a>
+</li>
+ -->
+	  <!-- </ul> -->
+	</div>
+
+
+
+</div>
+	<footer id="footer" class="inner"><br>
+<br>
+<br>
+<br>
+&copy; 2013
+
+    Pieux Xi
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/hyphenator.js"></script>
+
+
+
+
+
+
+
+</body>
+<script>
+  $(document).ready(function() {
+  // Make images center
+  $('p:has(img)').css('text-align', 'center');
+  });
+</script>
+</html>

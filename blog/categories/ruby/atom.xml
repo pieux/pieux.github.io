@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ruby | POEMS]]></title>
+  <link href="http://pieux.github.io/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://pieux.github.io/"/>
+  <updated>2013-12-21T20:21:41+08:00</updated>
+  <id>http://pieux.github.io/</id>
+  <author>
+    <name><![CDATA[Pieux Xi]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[JRuby Small Memos]]></title>
+    <link href="http://pieux.github.io/blog/2013/11/27/jruby-small-memos/"/>
+    <updated>2013-11-27T23:22:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/11/27/jruby-small-memos</id>
+    <content type="html"><![CDATA[<p><code>
+$ jruby --version
+</code></p>
+
+<p><code>
+$ jruby -e "puts 'This is a short program'"
+This is a short program
+</code></p>
+
+<p><code>
+$ jirb
+irb(main):001:0&gt; ['Hello', 'world'].join ' '
+=&gt; "Hello world"
+irb(main):002:0&gt; "ybuRJ morf".reverse
+=&gt; ufrom JRuby"
+irb(main):003:0&gt;
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

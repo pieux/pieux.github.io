@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Tools | POEMS]]></title>
+  <link href="http://pieux.github.io/blog/categories/tools/atom.xml" rel="self"/>
+  <link href="http://pieux.github.io/"/>
+  <updated>2013-12-21T20:21:41+08:00</updated>
+  <id>http://pieux.github.io/</id>
+  <author>
+    <name><![CDATA[Pieux Xi]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[First Touch of Travis CI]]></title>
+    <link href="http://pieux.github.io/blog/2013/12/11/first-touch-of-travis-ci/"/>
+    <updated>2013-12-11T02:37:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/12/11/first-touch-of-travis-ci</id>
+    <content type="html"><![CDATA[<p>目前 Travis CI 给我的感觉和 Jekins 类似，每次 push 到 github 上，
+Travis 会自动跑一遍，比如按官方文档所说，对于 Java 项目，如果发现
+pom.xml 文件，会使用 Maven 3 的一些 lifecycle。</p>
+
+<p>对于一个 Java 项目，需要在 .git/ 目录下，新建文件 <code>.travis.yml</code>，最简
+单的内容是：</p>
+
+<p><code>
+language: java
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

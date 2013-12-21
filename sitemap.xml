@@ -1,6 +1,72 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
+        <loc>http://pieux.github.io/blog/2013/11/23/a-example-of-writing-exception-in-java/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/11/23/a-growing-emacser/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/11/23/macro-and-defmacro-in-emacs/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/11/24/ease-life-with-yasnippet/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/11/27/jruby-small-memos/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/11/29/linux-useful-tricks/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/11/29/emacs-survial-with-evil-and-family/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/11/30/emacs-help-command/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/12/04/note-writing-gnu-emacs-extensions/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/12/05/deploy-war-to-tomcat/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/12/05/note-special-things-about-cas/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/12/05/note-cas-java-client/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/12/08/maven-archetype-plugin/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/12/08/note-everything-about-cas/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://pieux.github.io/blog/2013/12/11/first-touch-of-travis-ci/</loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://pieux.github.io/blog/2013/12/12/things-about-tomcat-ssl-certification-and-cas-saml/
+        </loc>
+        <lastmod>2013-12-21T20:15:13+08:00</lastmod>
+    </url>
+    <url>
         <loc>http://pieux.github.io/blog/archives/</loc>
         <lastmod>2013-12-21T20:15:13+08:00</lastmod>
     </url>
@@ -10,7 +76,7 @@
     </url>
     <url>
         <loc>http://pieux.github.io/</loc>
-        <lastmod>2013-12-21T20:18:35+08:00</lastmod>
+        <lastmod>2013-12-21T20:20:12+08:00</lastmod>
     </url>
     <url>
         <loc>http://pieux.github.io/robots.txt</loc>

@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Emacs | POEMS]]></title>
+  <link href="http://pieux.github.io/blog/categories/emacs/atom.xml" rel="self"/>
+  <link href="http://pieux.github.io/"/>
+  <updated>2013-12-21T20:21:41+08:00</updated>
+  <id>http://pieux.github.io/</id>
+  <author>
+    <name><![CDATA[Pieux Xi]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[NOTE: Writing GNU Emacs Extensions]]></title>
+    <link href="http://pieux.github.io/blog/2013/12/04/note-writing-gnu-emacs-extensions/"/>
+    <updated>2013-12-04T11:59:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/12/04/note-writing-gnu-emacs-extensions</id>
+    <content type="html"><![CDATA[<h1>1￼</h1>
+
+<p><strong>列表处理</strong></p>
+
+<h2>1.1</h2>
+
+<p><strong>Lisp 列表</strong></p>
+
+<p><code>
+'(rose
+  violet
+  daisy
+  buttercup)
+</code></p>
+
+<h3>1.1.1</h3>
+
+<p><strong>Lisp 原子</strong></p>
+
+<p><code>()</code> 空列表</p>
+
+<p>空列表既是原子，也是列表</p>
+
+<p>原子和列表都叫做 <strong>符号表达式</strong>(symbolic expression)，简称 s-expression。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Emacs Help Command]]></title>
+    <link href="http://pieux.github.io/blog/2013/11/30/emacs-help-command/"/>
+    <updated>2013-11-30T03:30:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/11/30/emacs-help-command</id>
+    <content type="html"><![CDATA[<p>You have typed C-h, the help character.  Type a Help option:
+(Use SPC or DEL to scroll through this text.  Type q to exit the Help command.)</p>
+
+<p>常用的是：</p>
+
+<p>```
+a PATTERN   Show commands whose name matches the PATTERN (a list of words</p>
+
+<pre><code>          or a regexp).  See also the `apropos' command.              
+</code></pre>
+
+<p>b           Display all key bindings.
+c KEYS      Display the command name run by the given key sequence.
+C CODING    Describe the given coding system, or RET for current ones.
+d PATTERN   Show a list of functions, variables, and other items whose</p>
+
+<pre><code>          documentation matches the PATTERN (a list of words or a regexp).
+</code></pre>
+
+<p>e           Go to the <em>Messages</em> buffer which logs echo-area messages.
+f FUNCTION  Display documentation for the given function.
+F COMMAND   Show the on-line manual&rsquo;s section that describes the command.
+g           Display information about the GNU project.
+h           Display the HELLO file which illustrates various scripts.
+i           Start the Info documentation reader: read on-line manuals.
+I METHOD    Describe a specific input method, or RET for current.
+k KEYS      Display the full documentation for the key sequence.
+K KEYS      Show the on-line manual&rsquo;s section for the command bound to KEYS.
+l           Show last 300 input keystrokes (lossage).
+L LANG-ENV  Describes a specific language environment, or RET for current.
+m           Display documentation of current minor modes and current major mode,</p>
+
+<pre><code>          including their special commands.
+</code></pre>
+
+<p>n           Display news of recent Emacs changes.
+p TOPIC     Find packages matching a given topic keyword.
+r           Display the Emacs manual in Info mode.
+s           Display contents of current syntax table, plus explanations.
+S SYMBOL    Show the section for the given symbol in the on-line manual</p>
+
+<pre><code>          for the programming language used in this buffer.
+</code></pre>
+
+<p>t           Start the Emacs learn-by-doing tutorial.
+v VARIABLE  Display the given variable&rsquo;s documentation and value.
+w COMMAND   Display which keystrokes invoke the given command (where-is).
+.           Display any available local help at point in the echo area.</p>
+
+<p>C-a         Information about Emacs.
+C-c         Emacs copying permission (GNU General Public License).
+C-d         Instructions for debugging GNU Emacs.
+C-e         External packages and information about Emacs.
+C-f         Emacs FAQ.
+C-m         How to order printed Emacs manuals.
+C-n         News of recent Emacs changes.
+C-o         Emacs ordering and distribution information.
+C-p         Info about known Emacs problems.
+C-t         Emacs TODO list.
+C-w         Information on absence of warranty for GNU Emacs.</p>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Emacs Survial with Evil &amp; Family]]></title>
+    <link href="http://pieux.github.io/blog/2013/11/29/emacs-survial-with-evil-and-family/"/>
+    <updated>2013-11-29T23:33:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/11/29/emacs-survial-with-evil-and-family</id>
+    <content type="html"><![CDATA[<h1>1 概览</h1>
+
+<h2>1.1 安装 evil</h2>
+
+<p>从网上找到的一个简易的方法，easy to be understood:</p>
+
+<p>```
+(defun require-package (package)
+  &ldquo;Install given PACKAGE.&rdquo;
+  (unless (package-installed-p package)</p>
+
+<pre><code>(unless (assoc package package-archive-contents)
+  (package-refresh-contents))
+(package-install package)))
+</code></pre>
+
+<p>```</p>
+
+<p><code>
+(require-package 'evil)
+(require 'evil)
+(evil-mode 1)
+</code></p>
+
+<h2>1.2 modes and states</h2>
+
+<p>光标上用点颜色，看起来舒服点。红色是退回Emacs（使用<code>C-z</code>，再按一次<code>C-z</code>回到evil），</p>
+
+<p><code>
+(setq evil-emacs-state-cursor '("red" box))
+(setq evil-normal-state-cursor '("green" box))
+(setq evil-insert-state-cursor '("orange" bar))
+</code></p>
+
+<blockquote><p>这里有个terminology的区别：vim中的<em>mode</em>指的是Normal, Insert, Visual等，vim是模式编辑器。但是在Emacs中，<em>mode</em>是指对特定文本定义的一组快捷键。所以，evil把vim中的<em>mode</em>称作<em>state</em>。</p></blockquote>
+
+<h1>2 设置</h1>
+
+<p>通过一堆variable设置evil，可以通过 <code>M-x customize-group RET evil RET</code> 查看当前的设置。</p>
+
+<p><code>setq</code>设置全局变量，<code>setq-default</code>设置buffer-local的变量，而且要在evil加载前修改<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup>。</p>
+
+<p><code>
+(setq evil-shift-width 8)
+;; Load Evil
+(require ’evil) . . .
+</code></p>
+
+<p>下面列出的variable，基本上默认值和vim的行为类似，但是<em>evil-want-C-u-scroll</em>默认不是t。</p>
+
+<p><em>evil-auto-indent</em> [Variable]</p>
+
+<blockquote><p>t(default), nil，类似vim中的autoindent。</p></blockquote>
+
+<p><em>evil-shift-width</em> [Variable]</p>
+
+<blockquote><p>The number of columns a line is shifted by the commands > and &lt;.</p></blockquote>
+
+<p><em>evil-repeat-move-cursor</em> [Variable]</p>
+
+<blockquote><p>如果t(default)，使用<code>.</code>重复时光标改变位置。</p></blockquote>
+
+<p><em>evil-find-skip-newlines</em> [Variable]</p>
+
+<blockquote><p>如果t，那么<em>f</em>，<em>F</em>，<em>t</em>，<em>T</em>会查找到其他行。nil(default)。</p></blockquote>
+
+<p><em>evil-move-cursor-back</em> [Variable]</p>
+
+<blockquote><p>t(default)，和vim的行为类似，退出insert state时，光标前移一格。</p></blockquote>
+
+<p><em>evil-want-fine-undo</em> [Variable]</p>
+
+<blockquote><p>If t, then a change-based action like cw may be undone in several steps. If nil (the default), then it is undone in one step.</p></blockquote>
+
+<p><em>evil-regexp-search</em> [Variable]</p>
+
+<blockquote><p>t(default)，<code>/</code>，<code>?</code>使用正则表达式</p></blockquote>
+
+<p><em>evil-search-wrap</em> [Variable]</p>
+
+<blockquote><p>t(default)，<code>/</code>，<code>?</code>搜索是到底后从头再搜索。</p></blockquote>
+
+<p><em>evil-flash-delay</em> [Variable]</p>
+
+<blockquote><p>The number of seconds to flash search matches when pressing n and N.</p></blockquote>
+
+<p><em>evil-want-C-i-jump</em> [Variable]</p>
+
+<blockquote><p>If t (the default), then C-i jumps forwards in the jump list. If nil, then C-i inserts a tab.</p></blockquote>
+
+<p><em>evil-want-C-u-scroll</em> [Variable]</p>
+
+<blockquote><p>If t, then C-u scrolls the buffer. If nil (the default), then C-u begins a numeric prefix argument.</p></blockquote>
+
+<h2>2.1 The cursor</h2>
+
+<p>这个之前也已经涉及过，现在全面了解下：</p>
+
+<p><code>
+(setq evil-emacs-state-cursor '("red" box))
+(setq evil-normal-state-cursor '("green" box))
+(setq evil-insert-state-cursor '("orange" bar))
+</code></p>
+
+<p>一共这么多：</p>
+
+<p>```
+evil-default-cursor</p>
+
+<pre><code>The default cursor.
+</code></pre>
+
+<p>evil-normal-state-cursor</p>
+
+<pre><code>The cursor for Normal state.
+</code></pre>
+
+<p>evil-insert-state-cursor</p>
+
+<pre><code>The cursor for Insert state.
+</code></pre>
+
+<p>evil-visual-state-cursor</p>
+
+<pre><code>The cursor for Visual state.
+</code></pre>
+
+<p>evil-replace-state-cursor</p>
+
+<pre><code>The cursor for Replace state.
+</code></pre>
+
+<p>evil-operator-state-cursor</p>
+
+<pre><code>The cursor for Operator-Pending state.
+</code></pre>
+
+<p>evil-motion-state-cursor</p>
+
+<pre><code>The cursor for Motion state.
+</code></pre>
+
+<p>evil-emacs-state-cursor</p>
+
+<pre><code>The cursor for Emacs state.
+</code></pre>
+
+<p>```</p>
+
+<h2>2.2 The initial state</h2>
+
+<p>默认是进入 Normal State。我也就不修改了。</p>
+
+<h1>3 Keymaps</h1>
+
+<p>Evil 的键映射存储在多个keymaps中，每个 state 有一个全局的 keymap，比如对应于Normal State 的<code>evil-normal-state-map</code>。
+通过 Emacs 的 <code>define-key</code> 来修改。</p>
+
+<p><code>
+;; bind key "w" to command foo
+(define-key evil-normal-state-map "w" ’foo)
+</code></p>
+
+<p><code>evil-maps.el</code> 包含所有的键绑定。</p>
+
+<p>```
+evil-normal-state-map</p>
+
+<pre><code>The global keymap for Normal state.
+</code></pre>
+
+<p>evil-insert-state-map</p>
+
+<pre><code>The global keymap for Insert state.
+</code></pre>
+
+<p>evil-visual-state-map</p>
+
+<pre><code>The global keymap for Visual state.
+</code></pre>
+
+<p>evil-replace-state-map</p>
+
+<pre><code>The global keymap for Replace state.
+</code></pre>
+
+<p>evil-operator-state-map</p>
+
+<pre><code>The global keymap for Operator-Pending state.
+</code></pre>
+
+<p>evil-motion-state-map</p>
+
+<pre><code>The global keymap for Motion state.
+</code></pre>
+
+<p>```</p>
+
+<p>每个 state 还有一个 buffer-local 的 keymap。也就是特定于该 buffer，优先于 global keymap。这些可以通过 mode hook 修改。</p>
+
+<p>```
+evil-normal-state-local-map</p>
+
+<pre><code>Buffer-local keymap for Normal state.
+</code></pre>
+
+<p>evil-insert-state-local-map</p>
+
+<pre><code>Buffer-local keymap for Insert state.
+</code></pre>
+
+<p>evil-visual-state-local-map</p>
+
+<pre><code>Buffer-local keymap for Visual state.
+</code></pre>
+
+<p>evil-replace-state-local-map</p>
+
+<pre><code>Buffer-local keymap for Replace state.
+</code></pre>
+
+<p>evil-operator-state-local-map</p>
+
+<pre><code>Buffer-local keymap for Operator-Pending state.
+</code></pre>
+
+<p>evil-motion-state-local-map</p>
+
+<pre><code>Buffer-local keymap for Motion state.
+</code></pre>
+
+<p>```</p>
+
+<h2>3.1 ‘evil-define-key’</h2>
+
+<p>Evil 提供的方法，可以往 Emacs 的 keymap 中添加特定 state 的键绑定。比如:</p>
+
+<p>定义了一个 minor mode，叫做 foo-mode。然后往该 mode 的 normal state 下修改键绑定。</p>
+
+<p>```
+(define-minor-mode foo-mode</p>
+
+<pre><code>   "Foo mode."
+   :keymap (make-sparse-keymap))
+ (evil-define-key ’normal foo-mode-map "w" ’bar)
+ (evil-define-key ’normal foo-mode-map "e" ’baz)
+</code></pre>
+
+<p>```</p>
+
+<p>然后用 hook，添加到 text-mode-hook 里。</p>
+
+<p><code>
+(add-hook ’text-mode-hook ’foo-mode) ; enable alongside text-mode
+</code></p>
+
+<h2>Appendix 1</h2>
+
+<p>什么是 vim 的 magic？</p>
+
+<p>主要涉及到正则表达式。先留几个参考资料：</p>
+
+<ol>
+<li><a href="http://vimdoc.sourceforge.net/htmldoc/pattern.html#/magic">vimdoc</a></li>
+<li><a href="http://vim.wikia.com/wiki/Simplifying_regular_expressions_using_magic_and_no-magic">vim.vikia</a></li>
+</ol>
+
+
+<p><strong>To Be Continued</strong></p>
+<div class="footnotes">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>Strictly speaking, the order only matters if the variable affects the way Evil is loaded. This is the case with some of the ‘evil-want-’ variables.<a href="#fnref:1" rev="footnote">&#8617;</a></p></li>
+</ol>
+</div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ease Life with YASnippet]]></title>
+    <link href="http://pieux.github.io/blog/2013/11/24/ease-life-with-yasnippet/"/>
+    <updated>2013-11-24T01:44:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/11/24/ease-life-with-yasnippet</id>
+    <content type="html"><![CDATA[<p>安装使用<code>package-install</code>，实际上可以写一个简易方法避免重复劳动：</p>
+
+<p>```
+(defun require-package (package)
+  &ldquo;Install given PACKAGE.&rdquo;
+  (unless (package-installed-p package)</p>
+
+<pre><code>(unless (assoc package package-archive-contents)
+  (package-refresh-contents))
+(package-install package)))
+</code></pre>
+
+<p>```</p>
+
+<p>学习下其中的1个function</p>
+
+<p><code>assoc</code> is a built-in function in `C source code'.</p>
+
+<p><code>
+(assoc KEY LIST)
+</code></p>
+
+<p>Return non-nil if KEY is `equal' to the car of an element of LIST.
+The value is actually the first element of LIST whose car equals KEY.</p>
+
+<p>开始学习如何使用YASnippet。</p>
+
+<p><strong>1 组织你的 Snippets</strong> (<em>Organizing Snippets</em>)</p>
+
+<p>Snippet的定义是储存在文件系统的文件中。YASnippet的触发机制会找到这些snippet tables，然后展开。</p>
+
+<p>首先，新建一个目录：my-snippets，用来存放自定义的snippets。</p>
+
+<p>```
+(require &lsquo;yasnippet)</p>
+
+<p>(setq yas-snippet-dirs (concat user-emacs-directory &ldquo;my-snippets&rdquo;))</p>
+
+<p>(add-hook &lsquo;prog-mode-hook 'yas-minor-mode)
+```</p>
+
+<p>看下是怎么组织snippets的（这是YASnippet自带的）：</p>
+
+<p><code>.yas.parent</code>文件可以共享其他目录下的snippets。</p>
+
+<p>如果有一个空的<code>.yas-make-groups</code>文件，会在 YASnippet Menu按照目录结构组织地更清晰。</p>
+
+<p><strong>2 展开你的 Snippets</strong> (<em>Traiggering expansion</em>)</p>
+
+<p>很多中方式能展开snippets，包括：</p>
+
+<ul>
+<li><p>By typing an abbrev, the snippet trigger key, and then pressing the key defined in yas/trigger-key (which defaults to &ldquo;TAB&rdquo;). This works in buffers where the minor mode yas/minor-mode is active;</p></li>
+<li><p>By invoking the command yas/insert-snippet (either by typing M-x yas/insert-snippet or its keybinding). This does not require yas/minor-mode to be active.</p></li>
+<li><p>By using hippie-expand</p></li>
+</ul>
+
+
+<p>以上是3中最常见的方法（虽然我不知道什么是 hippie-expand）。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[macro &amp; defmacro in Emacs]]></title>
+    <link href="http://pieux.github.io/blog/2013/11/23/macro-and-defmacro-in-emacs/"/>
+    <updated>2013-11-23T16:42:00+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/11/23/macro-and-defmacro-in-emacs</id>
+    <content type="html"><![CDATA[<p>学习下Lisp的宏（macro）。</p>
+
+<p>首先，区别：Lisp宏和键盘宏（keyboard macro）是两个不同的概念。</p>
+
+<p>一个LISP宏(Lisp Macro)是一个扩展LISP语言的用户定义的结构.
+ 宏不像函数那样对参数执行表达式. 它们只是在构造一个包括这些参数的表达式.</p>
+
+<blockquote><p>也就是，宏是一个结构，是在构造。就是Lisp非常牛逼的一点：Code as data。</p></blockquote>
+
+<p>首先看下语法定义：</p>
+
+<p><code>defmacro</code> is a Lisp macro in `byte-run.el'.</p>
+
+<p><code>
+(defmacro NAME ARGLIST &amp;optional DOCSTRING DECL &amp;rest BODY)
+</code></p>
+
+<p>Define NAME as a macro.
+When the macro is called, as in (NAME ARGS&hellip;),
+the function (lambda ARGLIST BODY&hellip;) is applied to
+the list ARGS&hellip; as it appears in the expression,
+and the result should be a form to be evaluated instead of the original.
+DECL is a declaration, optional, of the form (declare DECLS&hellip;) where
+DECLS is a list of elements of the form (PROP . VALUES).  These are
+interpreted according to `macro-declarations-alist'.
+The return value is undefined.</p>
+
+<p>好长的解释。</p>
+
+<p>看一个实例：</p>
+
+<p>```
+(defmacro inc (var)
+  (list &lsquo;setq var (list '1+ var)))</p>
+
+<p>```</p>
+
+<blockquote><p>注意一点：<code>(list '1+ var)</code> 开始时写成<code>(list '1+var)</code>，少写了一个空格。</p></blockquote>
+
+<p>定义了一个Lisp宏：<code>inc (var)</code>。这个macro的BODY是（按照list函数拼出来）:</p>
+
+<p><code>
+(setq var (1+ var))
+</code></p>
+
+<p>当然也可以这样展开宏：</p>
+
+<p><code>
+(macroexpand '(inc x))
+</code></p>
+
+<p>现在就可以用宏了：</p>
+
+<p><code>
+(setq x 1)
+(inc x)
+</code></p>
+
+<blockquote><p>解释:</p></blockquote>
+
+<p><code>list</code> 的用法</p>
+
+<p><code>``
+list is a built-in function in</code>C source code'.</p>
+
+<p>(list &amp;rest OBJECTS)</p>
+
+<p>Return a newly created list with specified arguments as elements.
+Any number of arguments, even zero arguments, are allowed.</p>
+
+<p>```</p>
+
+<p>宏还有一种写法，就是使用反引用（Backquote）。</p>
+
+<p>我们可以用 &lsquo; 引用一个对象并不执行.我们还可以用 反引用 ` 引用一个列表, 但是只是选择性的执行列表的元素.</p>
+]]></content>
+  </entry>
+  
+</feed>
