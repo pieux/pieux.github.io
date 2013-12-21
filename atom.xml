@@ -4,13 +4,88 @@
   <title><![CDATA[POEMS]]></title>
   <link href="http://pieux.github.io/atom.xml" rel="self"/>
   <link href="http://pieux.github.io/"/>
-  <updated>2013-12-21T20:21:41+08:00</updated>
+  <updated>2013-12-21T21:08:43+08:00</updated>
   <id>http://pieux.github.io/</id>
   <author>
     <name><![CDATA[Pieux Xi]]></name>
     
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[use gist.el]]></title>
+    <link href="http://pieux.github.io/blog/2013/12/21/use-gist-dot-el/"/>
+    <updated>2013-12-21T21:05:30+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/12/21/use-gist-dot-el</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/defunkt/gist.el">github repo</a></p>
+
+<p>gist buffer:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>g : reload the gist list from server
+</span><span class='line'>e : edit current gist description
+</span><span class='line'>k : delete current gist
+</span><span class='line'>+ : add a file to the current gist
+</span><span class='line'>- : remove a file from the current gist</span></code></pre></td></tr></table></div></figure>
+
+
+<p>in-place edition. While viewing a gist file buffer, you can:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>C-x C-s : save a new version of the gist
+</span><span class='line'>C-x C-w : rename some file</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Functions:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gist-list - Lists your gists in a new buffer. Use arrow keys
+</span><span class='line'>to browse, RET to open one in the other buffer.
+</span><span class='line'>
+</span><span class='line'>gist-region - Copies Gist URL into the kill ring.
+</span><span class='line'>With a prefix argument, makes a private gist.
+</span><span class='line'>
+</span><span class='line'>gist-region-private - Explicitly create a private gist.
+</span><span class='line'>
+</span><span class='line'>gist-buffer - Copies Gist URL into the kill ring.
+</span><span class='line'>With a prefix argument, makes a private gist.
+</span><span class='line'>
+</span><span class='line'>gist-buffer-private - Explicitly create a private gist.
+</span><span class='line'>
+</span><span class='line'>gist-region-or-buffer - Post either the current region, or if mark
+</span><span class='line'>is not set, the current buffer as a new paste at gist.github.com .
+</span><span class='line'>Copies the URL into the kill ring.
+</span><span class='line'>With a prefix argument, makes a private paste.
+</span><span class='line'>
+</span><span class='line'>gist-region-or-buffer-private - Explicitly create a gist from the
+</span><span class='line'>region or buffer.</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Things about Tomcat SSL Certification and CAS(SAML)]]></title>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Emacs | POEMS]]></title>
   <link href="http://pieux.github.io/blog/categories/emacs/atom.xml" rel="self"/>
   <link href="http://pieux.github.io/"/>
-  <updated>2013-12-21T20:21:41+08:00</updated>
+  <updated>2013-12-21T21:08:43+08:00</updated>
   <id>http://pieux.github.io/</id>
   <author>
     <name><![CDATA[Pieux Xi]]></name>
@@ -12,6 +12,57 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[use gist.el]]></title>
+    <link href="http://pieux.github.io/blog/2013/12/21/use-gist-dot-el/"/>
+    <updated>2013-12-21T21:05:30+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/12/21/use-gist-dot-el</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/defunkt/gist.el">github repo</a></p>
+
+<p>gist buffer:</p>
+
+<p><code>
+g : reload the gist list from server
+e : edit current gist description
+k : delete current gist
++ : add a file to the current gist
+- : remove a file from the current gist
+</code></p>
+
+<p>in-place edition. While viewing a gist file buffer, you can:</p>
+
+<p><code>
+C-x C-s : save a new version of the gist
+C-x C-w : rename some file
+</code></p>
+
+<p>Functions:</p>
+
+<p>```
+gist-list &ndash; Lists your gists in a new buffer. Use arrow keys
+to browse, RET to open one in the other buffer.</p>
+
+<p>gist-region &ndash; Copies Gist URL into the kill ring.
+With a prefix argument, makes a private gist.</p>
+
+<p>gist-region-private &ndash; Explicitly create a private gist.</p>
+
+<p>gist-buffer &ndash; Copies Gist URL into the kill ring.
+With a prefix argument, makes a private gist.</p>
+
+<p>gist-buffer-private &ndash; Explicitly create a private gist.</p>
+
+<p>gist-region-or-buffer &ndash; Post either the current region, or if mark
+is not set, the current buffer as a new paste at gist.github.com .
+Copies the URL into the kill ring.
+With a prefix argument, makes a private paste.</p>
+
+<p>gist-region-or-buffer-private &ndash; Explicitly create a gist from the
+region or buffer.
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[NOTE: Writing GNU Emacs Extensions]]></title>
@@ -464,89 +515,6 @@ The value is actually the first element of LIST whose car equals KEY.</p>
 
 
 <p>以上是3中最常见的方法（虽然我不知道什么是 hippie-expand）。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[macro &amp; defmacro in Emacs]]></title>
-    <link href="http://pieux.github.io/blog/2013/11/23/macro-and-defmacro-in-emacs/"/>
-    <updated>2013-11-23T16:42:00+08:00</updated>
-    <id>http://pieux.github.io/blog/2013/11/23/macro-and-defmacro-in-emacs</id>
-    <content type="html"><![CDATA[<p>学习下Lisp的宏（macro）。</p>
-
-<p>首先，区别：Lisp宏和键盘宏（keyboard macro）是两个不同的概念。</p>
-
-<p>一个LISP宏(Lisp Macro)是一个扩展LISP语言的用户定义的结构.
- 宏不像函数那样对参数执行表达式. 它们只是在构造一个包括这些参数的表达式.</p>
-
-<blockquote><p>也就是，宏是一个结构，是在构造。就是Lisp非常牛逼的一点：Code as data。</p></blockquote>
-
-<p>首先看下语法定义：</p>
-
-<p><code>defmacro</code> is a Lisp macro in `byte-run.el'.</p>
-
-<p><code>
-(defmacro NAME ARGLIST &amp;optional DOCSTRING DECL &amp;rest BODY)
-</code></p>
-
-<p>Define NAME as a macro.
-When the macro is called, as in (NAME ARGS&hellip;),
-the function (lambda ARGLIST BODY&hellip;) is applied to
-the list ARGS&hellip; as it appears in the expression,
-and the result should be a form to be evaluated instead of the original.
-DECL is a declaration, optional, of the form (declare DECLS&hellip;) where
-DECLS is a list of elements of the form (PROP . VALUES).  These are
-interpreted according to `macro-declarations-alist'.
-The return value is undefined.</p>
-
-<p>好长的解释。</p>
-
-<p>看一个实例：</p>
-
-<p>```
-(defmacro inc (var)
-  (list &lsquo;setq var (list '1+ var)))</p>
-
-<p>```</p>
-
-<blockquote><p>注意一点：<code>(list '1+ var)</code> 开始时写成<code>(list '1+var)</code>，少写了一个空格。</p></blockquote>
-
-<p>定义了一个Lisp宏：<code>inc (var)</code>。这个macro的BODY是（按照list函数拼出来）:</p>
-
-<p><code>
-(setq var (1+ var))
-</code></p>
-
-<p>当然也可以这样展开宏：</p>
-
-<p><code>
-(macroexpand '(inc x))
-</code></p>
-
-<p>现在就可以用宏了：</p>
-
-<p><code>
-(setq x 1)
-(inc x)
-</code></p>
-
-<blockquote><p>解释:</p></blockquote>
-
-<p><code>list</code> 的用法</p>
-
-<p><code>``
-list is a built-in function in</code>C source code'.</p>
-
-<p>(list &amp;rest OBJECTS)</p>
-
-<p>Return a newly created list with specified arguments as elements.
-Any number of arguments, even zero arguments, are allowed.</p>
-
-<p>```</p>
-
-<p>宏还有一种写法，就是使用反引用（Backquote）。</p>
-
-<p>我们可以用 &lsquo; 引用一个对象并不执行.我们还可以用 反引用 ` 引用一个列表, 但是只是选择性的执行列表的元素.</p>
 ]]></content>
   </entry>
   
