@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Java | POEMS]]></title>
   <link href="http://pieux.github.io/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://pieux.github.io/"/>
-  <updated>2013-12-25T10:30:01+08:00</updated>
+  <updated>2013-12-25T10:38:39+08:00</updated>
   <id>http://pieux.github.io/</id>
   <author>
     <name><![CDATA[Pieux Xi]]></name>
@@ -12,6 +12,21 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Some cheating parts when use spring test with junit]]></title>
+    <link href="http://pieux.github.io/blog/2013/12/25/some-cheating-parts-when-use-spring-test-with-junit/"/>
+    <updated>2013-12-25T10:33:19+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/12/25/some-cheating-parts-when-use-spring-test-with-junit</id>
+    <content type="html"><![CDATA[<p>refer section:</p>
+
+<ol>
+<li><a href="https://www.evernote.com/shard/s30/sh/cc6585d7-d14f-44a3-a20a-d99886ccb8eb/d4799edf2864d020fce50318e75e0825">why test not run</a></li>
+<li><a href="http://forum.spring.io/forum/spring-projects/container/52022-spring-test-breaks-in-junit-4-5)">spring-test breaks in Junit 4.5</a></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Things about Tomcat SSL Certification and CAS(SAML)]]></title>
@@ -716,97 +731,6 @@ Order of Required Filters</p>
 
 <p></listener>
 ```</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[NOTE: Special Things about CAS]]></title>
-    <link href="http://pieux.github.io/blog/2013/12/05/note-special-things-about-cas/"/>
-    <updated>2013-12-05T02:49:00+08:00</updated>
-    <id>http://pieux.github.io/blog/2013/12/05/note-special-things-about-cas</id>
-    <content type="html"><![CDATA[<h1>1</h1>
-
-<p><strong>Create the Certificate</strong></p>
-
-<p>打开终端，进到 home 目录，运行命令：</p>
-
-<p><code>
-keytool -genkey -alias tomcat -keyalg RSA -validity 365
-</code></p>
-
-<p>需要输入：</p>
-
-<p><code>
-Enter keystore password:
-Re-enter new password:
-What is your first and last name?
-What is the name of your organizational unit?
-What is the name of your organization?
-What is the name of your City or Locality?
-What is the name of your State or Province?
-What is the two-letter country code for this unit?
-Is CN=$FULL_MACHINE_NAME, OU=Test, O=Test, L=Test, ST=Test, C=US correct?
-</code></p>
-
-<p>如何给这些值？</p>
-
-<p>For the keystore password you should enter &ldquo;changeit&rdquo; without the quotation marks. When prompted for the first and last name, you should enter your machine name during development. The rest of the data does not matter. Then obviously answer &ldquo;yes&rdquo; to the question of whether it&rsquo;s correct.</p>
-
-<blockquote><p>注意： CAS 协议需要走 HTTPS，为了保证能够工作， &ldquo;first and last name&rdquo; 为 $FULL_MACHINE_NAME。Mac 上获取计算机全名的方法是：<code>scutil --get ComputerName</code> 或者 <code>scutil --get LocalHostName</code>。</p></blockquote>
-
-<p>下一步，打开 <code>$TOMCAT_HOME/conf/server.xml</code>，找到这一块，去掉注释即可：</p>
-
-<p>```</p>
-
-<!--
-<Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
-    maxThreads="150" scheme="https" secure="true"
-    clientAuth="false" sslProtocol="TLS" />
--->
-
-
-<p>```</p>
-
-<p>重启 Tomcat，访问</p>
-
-<p><code>
-https://$FULL_MACHINE_NAME:8443/
-</code></p>
-
-<p>Any application that wishes to securely connect to this Tomcat instance would need to import the certificate. You can export the certificate that&rsquo;s compatible with other JVM keystores by executing the following command:</p>
-
-<p>所有想访问该 Tomcat 实例的应用都需要导入证书。首先导出证书，需要输入 keystore 的密码，这里就是 changeit：</p>
-
-<p><code>
-keytool -export -alias tomcat -file server.crt
-</code></p>
-
-<p>输出是：</p>
-
-<p><code>
-Enter keystore password:
-Certificate stored in file &lt;server.crt&gt;
-</code></p>
-
-<p>You can then import the server.crt into other JVM keystore&rsquo;s by executing a command similar to this:</p>
-
-<p><code>
-keytool -import -file server.crt -keystore $JAVA_HOME/jre/lib/security/cacerts -alias tomcat
-</code></p>
-
-<p>It&rsquo;s recommended that you add it to the JVM keystore of your local development machine to facilitate testing.</p>
-
-<h1>2</h1>
-
-<p><strong>Maven War Overlay</strong><sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></p>
-<div class="footnotes">
-<hr/>
-<ol>
-<li id="fn:1">
-<p><a href="https://wiki.jasig.org/display/CASUM/Best+Practice+-+Setting+Up+CAS+Locally+using+the+Maven+WAR+Overlay+Method">Best Practice &ndash; Setting Up CAS Locally using the Maven WAR Overlay Method</a><a href="#fnref:1" rev="footnote">&#8617;</a></p></li>
-</ol>
-</div>
-
 ]]></content>
   </entry>
   

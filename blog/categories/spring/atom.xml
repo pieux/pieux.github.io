@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Spring | POEMS]]></title>
+  <link href="http://pieux.github.io/blog/categories/spring/atom.xml" rel="self"/>
+  <link href="http://pieux.github.io/"/>
+  <updated>2013-12-25T10:38:39+08:00</updated>
+  <id>http://pieux.github.io/</id>
+  <author>
+    <name><![CDATA[Pieux Xi]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Some cheating parts when use spring test with junit]]></title>
+    <link href="http://pieux.github.io/blog/2013/12/25/some-cheating-parts-when-use-spring-test-with-junit/"/>
+    <updated>2013-12-25T10:33:19+08:00</updated>
+    <id>http://pieux.github.io/blog/2013/12/25/some-cheating-parts-when-use-spring-test-with-junit</id>
+    <content type="html"><![CDATA[<p>refer section:</p>
+
+<ol>
+<li><a href="https://www.evernote.com/shard/s30/sh/cc6585d7-d14f-44a3-a20a-d99886ccb8eb/d4799edf2864d020fce50318e75e0825">why test not run</a></li>
+<li><a href="http://forum.spring.io/forum/spring-projects/container/52022-spring-test-breaks-in-junit-4-5)">spring-test breaks in Junit 4.5</a></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>
