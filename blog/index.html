@@ -7,7 +7,10 @@
 
 	<meta name="author" content="Pieux Xi">
 
-<meta name="description" content=" "> <meta name="keywords" content="">
+<meta name="description" content="起步 phonegap 的一些文章和资源： 前端 f2e 的框架和学习资源
+JavaScript 的框架和学习资源
+Phonegap 的文档和一些工具
+apple 开发者的一些准备工作 phonegap resources: The Command-Line Interface 使用的是 &hellip;"> <meta name="keywords" content="">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -48,6 +51,95 @@
 </header>
 
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<header>
+		<h2 class="title">
+			
+			<a href="/blog/2014/01/05/resources-for-starting-phonegap/">
+			
+				Resources for Starting Phonegap</a>
+		</h2>
+		<div class="meta date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-05T10:57:10+08:00" pubdate data-updated="true">Jan 5<span>th</span>, 2014</time></div>
+	</header>
+	<div class="entry-content">
+		<p> 起步 phonegap 的一些文章和资源：</p>
+
+<ul>
+<li>前端 f2e 的框架和学习资源</li>
+<li>JavaScript 的框架和学习资源</li>
+<li>Phonegap 的文档和一些工具</li>
+<li>apple 开发者的一些准备工作</li>
+</ul>
+
+
+<h1>phonegap</h1>
+
+<p>resources:</p>
+
+<ul>
+<li><a href="http://docs.phonegap.com/en/edge/guide_cli_index.md.html#The%20Command-Line%20Interface">The Command-Line Interface</a></li>
+</ul>
+
+
+<p>使用的是 ionic 提供的 seed project，所以不需要使用 phonegap 的 create
+指令。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ phonegap build ios # Build the App
+</span><span class='line'>$ phonegap install android # Test the App on an Emulator or Device</span></code></pre></td></tr></table></div></figure>
+
+
+<p> 更新 App，但是貌似没有我想的效果：</p>
+
+<p> <code>
+$ phonegap platform update android
+$ phonegap platform update ios
+</code></p>
+
+<p> 该文章中其他部分：
+ &ndash; 添加插件
+ &ndash; 使用 phonegap build</p>
+
+<h1>框架</h1>
+
+<ul>
+<li>ionic</li>
+<li>angularjs</li>
+</ul>
+
+
+<p>AngularJS 的学习资源参见一个 github repo :
+<a href="https://github.com/jmcunningham/AngularJS-Learning">jmcunningham/AngularJS-Learning</a></p>
+
+<h1>工具</h1>
+
+<ul>
+<li>phonegap build
+
+<h2>&ndash; firebase</h2></li>
+</ul>
+
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post">
@@ -1308,40 +1400,6 @@ Order of Required Filters</p>
 </ol>
 </div>
 
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post">
-	<header>
-		<h2 class="title">
-			
-			<a href="/blog/2013/12/05/deploy-war-to-tomcat/">
-			
-				Deploy War to Tomcat</a>
-		</h2>
-		<div class="meta date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-05T02:28:00+08:00" pubdate data-updated="true">Dec 5<span>th</span>, 2013</time></div>
-	</header>
-	<div class="entry-content">
-		<p>非常简单，<code>mvn package</code> 生成的 war 包，直接扔进 Tomcat 安装目录下的 webApps 目录。然后重启下 Tomcat。</p>
-
-<p>不需要任何额外的配置，默认是 localhost:8080/war_name/</p>
 
 		
 		
