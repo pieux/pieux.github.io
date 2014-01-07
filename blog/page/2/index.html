@@ -7,7 +7,22 @@
 
 	<meta name="author" content="Pieux Xi">
 
-<meta name="description" content=" 非常简单，mvn package 生成的 war 包，直接扔进 Tomcat 安装目录下的 webApps 目录。然后重启下 Tomcat。 不需要任何额外的配置，默认是 localhost:8080/war_name/ "> <meta name="keywords" content="">
+<meta name="description" content="1 Create the Certificate 打开终端，进到 home 目录，运行命令： 1
+keytool -genkey -alias tomcat -keyalg RSA -validity 365 需要输入： 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15 &hellip;"> <meta name="keywords" content="">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -48,6 +63,144 @@
 </header>
 
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<header>
+		<h2 class="title">
+			
+			<a href="/blog/2013/12/05/note-special-things-about-cas/">
+			
+				NOTE: Special Things About CAS</a>
+		</h2>
+		<div class="meta date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-05T02:49:00+08:00" pubdate data-updated="true">Dec 5<span>th</span>, 2013</time></div>
+	</header>
+	<div class="entry-content">
+		<h1>1</h1>
+
+<p><strong>Create the Certificate</strong></p>
+
+<p>打开终端，进到 home 目录，运行命令：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>keytool -genkey -alias tomcat -keyalg RSA -validity 365</span></code></pre></td></tr></table></div></figure>
+
+
+<p>需要输入：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Enter keystore password:
+</span><span class='line'>Re-enter new password:
+</span><span class='line'>What is your first and last name?
+</span><span class='line'>  [Unknown]:  $REPLACE_WITH_FULL_MACHINE_NAME
+</span><span class='line'>What is the name of your organizational unit?
+</span><span class='line'>  [Unknown]:  Test
+</span><span class='line'>What is the name of your organization?
+</span><span class='line'>  [Unknown]:  Test
+</span><span class='line'>What is the name of your City or Locality?
+</span><span class='line'>  [Unknown]:  Test
+</span><span class='line'>What is the name of your State or Province?
+</span><span class='line'>  [Unknown]:  Test
+</span><span class='line'>What is the two-letter country code for this unit?
+</span><span class='line'>  [Unknown]:  US
+</span><span class='line'>Is CN=$FULL_MACHINE_NAME, OU=Test, O=Test, L=Test, ST=Test, C=US correct?
+</span><span class='line'>  [no]:  yes</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如何给这些值？</p>
+
+<p>For the keystore password you should enter &ldquo;changeit&rdquo; without the quotation marks. When prompted for the first and last name, you should enter your machine name during development. The rest of the data does not matter. Then obviously answer &ldquo;yes&rdquo; to the question of whether it&rsquo;s correct.</p>
+
+<blockquote><p>注意： CAS 协议需要走 HTTPS，为了保证能够工作， &ldquo;first and last name&rdquo; 为 $FULL_MACHINE_NAME。Mac 上获取计算机全名的方法是：<code>scutil --get ComputerName</code> 或者 <code>scutil --get LocalHostName</code>。</p></blockquote>
+
+<p>下一步，打开 <code>$TOMCAT_HOME/conf/server.xml</code>，找到这一块，去掉注释即可：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;!--
+</span><span class='line'>&lt;Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
+</span><span class='line'>    maxThreads="150" scheme="https" secure="true"
+</span><span class='line'>    clientAuth="false" sslProtocol="TLS" /&gt;
+</span><span class='line'>--&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>重启 Tomcat，访问</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>https://$FULL_MACHINE_NAME:8443/</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Any application that wishes to securely connect to this Tomcat instance would need to import the certificate. You can export the certificate that&rsquo;s compatible with other JVM keystores by executing the following command:</p>
+
+<p>所有想访问该 Tomcat 实例的应用都需要导入证书。首先导出证书，需要输入 keystore 的密码，这里就是 changeit：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>keytool -export -alias tomcat -file server.crt</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出是：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Enter keystore password:
+</span><span class='line'>Certificate stored in file &lt;server.crt&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can then import the server.crt into other JVM keystore&rsquo;s by executing a command similar to this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>keytool -import -file server.crt -keystore $JAVA_HOME/jre/lib/security/cacerts -alias tomcat</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It&rsquo;s recommended that you add it to the JVM keystore of your local development machine to facilitate testing.</p>
+
+<h1>2</h1>
+
+<p><strong>Maven War Overlay</strong><sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></p>
+<div class="footnotes">
+<hr/>
+<ol>
+<li id="fn:1">
+<p><a href="https://wiki.jasig.org/display/CASUM/Best+Practice+-+Setting+Up+CAS+Locally+using+the+Maven+WAR+Overlay+Method">Best Practice &ndash; Setting Up CAS Locally using the Maven WAR Overlay Method</a><a href="#fnref:1" rev="footnote">&#8617;</a></p></li>
+</ol>
+</div>
+
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post">
@@ -1201,422 +1354,12 @@ particular subfeatures supported in this version of FEATURE.</p>
 
 </article>
 
-
-    <article class="post">
-	<header>
-		<h2 class="title">
-			
-			<a href="/blog/2013/11/23/a-example-of-writing-exception-in-java/">
-			
-				A Example of Writing Exception in Java</a>
-		</h2>
-		<div class="meta date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-23T07:49:00+08:00" pubdate data-updated="true">Nov 23<span>rd</span>, 2013</time></div>
-	</header>
-	<div class="entry-content">
-		<p>记录在阅读 Jasig Cas 的源码学习到的 Java 知识。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public abstract class AuthenticationException extends Exception {
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>首先，这是一个 abstract class.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/** The code to return for resolving to a message description. */
-</span><span class='line'>private String code;
-</span><span class='line'>
-</span><span class='line'>/**
-</span><span class='line'> * Method to return the unique identifier for this error type.
-</span><span class='line'> *
-</span><span class='line'> * @return the String identifier for this error type.
-</span><span class='line'> */
-</span><span class='line'>public final String getCode() {
-</span><span class='line'>    return this.code;
-</span><span class='line'>}
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>使用 code，来解析异常消息的描述。
-并且，code 有一个 get 方法，final 不可继承。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/** The error type that provides additional info about the nature of the exception cause **/
-</span><span class='line'>private String type = "error";
-</span><span class='line'>
-</span><span class='line'>/**
-</span><span class='line'> * Method to return the error type of this exception
-</span><span class='line'> *
-</span><span class='line'> * @return the String identifier for the cause of this error.
-</span><span class='line'> */
-</span><span class='line'>public final String getType() {
-</span><span class='line'>    return this.type;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>额外的一个 field: type，维护导致异常的本质信息。</p>
-
-<p>下面是 <code>AuthenticationException</code> 的 constructors。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public AuthenticationException(final String code) {
-</span><span class='line'>    this.code = code;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这是第1个 constructor。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public AuthenticationException(final String code, final String msg) {
-</span><span class='line'>    super(msg);
-</span><span class='line'>    this.code = code;
-</span><span class='line'>}
-</span><span class='line'>
-</span><span class='line'>public AuthenticationException(final String code, final String msg, final String type) {
-</span><span class='line'>    super(msg);
-</span><span class='line'>    this.code = code;
-</span><span class='line'>    this.type = type;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>第2个和第3个 constructor，需要学习的是 <code>super(msg)</code>。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/**
-</span><span class='line'> * Constructor that takes a code description of the error and the chained
-</span><span class='line'> * exception. These codes normally have a corresponding entries in the
-</span><span class='line'> * messages file for the internationalization of error messages.
-</span><span class='line'> *
-</span><span class='line'> * @param code The short unique identifier for this error.
-</span><span class='line'> * @param throwable The chained exception for this AuthenticationException
-</span><span class='line'> */
-</span><span class='line'>public AuthenticationException(final String code, final Throwable throwable) {
-</span><span class='line'>    super(throwable);
-</span><span class='line'>    this.code = code;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>最后一个 constructor，需要学习的是 <code>final Throwable throwable</code>，这块不是很懂。按描述是能链式异常。
-查看了 <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Exception.html#Exception(java.lang.Throwable)">Java Exception 文档</a>，它有一个 constructor：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public Exception(Throwable cause)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>它的作用是：用指定的 cause 和 详细的 message(<code>cause==null ? null : cause.toString()</code>)构造新的异常。
-它的作用就是一个 &ldquo;wrapper&#8221;。</p>
-
-<p>完整源码见：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/*
-</span><span class='line'> * Licensed to Jasig under one or more contributor license
-</span><span class='line'> * agreements. See the NOTICE file distributed with this work
-</span><span class='line'> * for additional information regarding copyright ownership.
-</span><span class='line'> * Jasig licenses this file to you under the Apache License,
-</span><span class='line'> * Version 2.0 (the "License"); you may not use this file
-</span><span class='line'> * except in compliance with the License.  You may obtain a
-</span><span class='line'> * copy of the License at the following location:
-</span><span class='line'> *
-</span><span class='line'> *   http://www.apache.org/licenses/LICENSE-2.0
-</span><span class='line'> *
-</span><span class='line'> * Unless required by applicable law or agreed to in writing,
-</span><span class='line'> * software distributed under the License is distributed on an
-</span><span class='line'> * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-</span><span class='line'> * KIND, either express or implied.  See the License for the
-</span><span class='line'> * specific language governing permissions and limitations
-</span><span class='line'> * under the License.
-</span><span class='line'> */
-</span><span class='line'>package org.jasig.cas.authentication.handler;
-</span><span class='line'>
-</span><span class='line'>/**
-</span><span class='line'> * The most generic type of authentication exception that one can catch if not
-</span><span class='line'> * sure what specific implementation will be thrown. Top of the tree of all
-</span><span class='line'> * other AuthenticationExceptions.
-</span><span class='line'> *
-</span><span class='line'> * @author Scott Battaglia
-</span><span class='line'> * @version $Revision$ $Date$
-</span><span class='line'> * @since 3.0
-</span><span class='line'> */
-</span><span class='line'>public abstract class AuthenticationException extends Exception {
-</span><span class='line'>
-</span><span class='line'>    /** Serializable ID. */
-</span><span class='line'>    private static final long serialVersionUID = 3906648604830611762L;
-</span><span class='line'>
-</span><span class='line'>    /** The code to return for resolving to a message description. */
-</span><span class='line'>    private String code;
-</span><span class='line'>
-</span><span class='line'>    /** The error type that provides additional info about the nature of the exception cause **/
-</span><span class='line'>    private String type = "error";
-</span><span class='line'>
-</span><span class='line'>    /**
-</span><span class='line'>     * Constructor that takes a code description of the error. These codes
-</span><span class='line'>     * normally have a corresponding entries in the messages file for the
-</span><span class='line'>     * internationalization of error messages.
-</span><span class='line'>     *
-</span><span class='line'>     * @param code The short unique identifier for this error.
-</span><span class='line'>     */
-</span><span class='line'>    public AuthenticationException(final String code) {
-</span><span class='line'>        this.code = code;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>    /**
-</span><span class='line'>     * Constructor that takes a &lt;code&gt;code&lt;/code&gt; description of the error along with the exception
-</span><span class='line'>     * &lt;code&gt;msg&lt;/code&gt; generally for logging purposes. These codes normally have a corresponding
-</span><span class='line'>     * entries in the messages file for the internationalization of error messages.
-</span><span class='line'>     *
-</span><span class='line'>     * @param code The short unique identifier for this error.
-</span><span class='line'>     * @param msg The error message associated with this exception for additional logging purposes.
-</span><span class='line'>     */
-</span><span class='line'>    public AuthenticationException(final String code, final String msg) {
-</span><span class='line'>        super(msg);
-</span><span class='line'>        this.code = code;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>    /**
-</span><span class='line'>     * Constructor that takes a &lt;code&gt;code&lt;/code&gt; description of the error along with the exception
-</span><span class='line'>     * &lt;code&gt;msg&lt;/code&gt; generally for logging purposes and the &lt;code&gt;type&lt;/code&gt; of the error that originally caused the exception.
-</span><span class='line'>     * These codes normally have a corresponding entries in the messages file for the internationalization of error messages.
-</span><span class='line'>     *
-</span><span class='line'>     * @param code The short unique identifier for this error.
-</span><span class='line'>     * @param msg The error message associated with this exception for additional logging purposes.
-</span><span class='line'>     * @param type The type of the error message that caused the exception to be thrown. By default,
-</span><span class='line'>     * all errors are considered of &lt;code&gt;error&lt;/code&gt;.
-</span><span class='line'>     */
-</span><span class='line'>    public AuthenticationException(final String code, final String msg, final String type) {
-</span><span class='line'>        super(msg);
-</span><span class='line'>        this.code = code;
-</span><span class='line'>        this.type = type;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>    /**
-</span><span class='line'>     * Constructor that takes a code description of the error and the chained
-</span><span class='line'>     * exception. These codes normally have a corresponding entries in the
-</span><span class='line'>     * messages file for the internationalization of error messages.
-</span><span class='line'>     *
-</span><span class='line'>     * @param code The short unique identifier for this error.
-</span><span class='line'>     * @param throwable The chained exception for this AuthenticationException
-</span><span class='line'>     */
-</span><span class='line'>    public AuthenticationException(final String code, final Throwable throwable) {
-</span><span class='line'>        super(throwable);
-</span><span class='line'>        this.code = code;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>    /**
-</span><span class='line'>     * Method to return the error type of this exception
-</span><span class='line'>     *
-</span><span class='line'>     * @return the String identifier for the cause of this error.
-</span><span class='line'>     */
-</span><span class='line'>    public final String getType() {
-</span><span class='line'>        return this.type;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>    /**
-</span><span class='line'>     * Method to return the unique identifier for this error type.
-</span><span class='line'>     *
-</span><span class='line'>     * @return the String identifier for this error type.
-</span><span class='line'>     */
-</span><span class='line'>    public final String getCode() {
-</span><span class='line'>        return this.code;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>    @Override
-</span><span class='line'>    public final String toString() {
-</span><span class='line'>        String msg = getCode();
-</span><span class='line'>        if (getMessage() != null && getMessage().trim().length() &gt; 0)
-</span><span class='line'>            msg = ":" + getMessage();
-</span><span class='line'>        return msg;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>}
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/" class="prev">Previous</a>
     
+    
+        <a href="/blog/page/3/" class="next">Next</a>
     
 </nav>
 </div>

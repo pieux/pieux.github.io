@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Gradle | POEMS]]></title>
+  <link href="http://pieux.github.io/blog/categories/gradle/atom.xml" rel="self"/>
+  <link href="http://pieux.github.io/"/>
+  <updated>2014-01-07T12:04:58+08:00</updated>
+  <id>http://pieux.github.io/</id>
+  <author>
+    <name><![CDATA[Pieux Xi]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Gradle Installation on Mac OS X]]></title>
+    <link href="http://pieux.github.io/blog/2014/01/06/gradle-installation-on-mac-os-x/"/>
+    <updated>2014-01-06T18:55:29+08:00</updated>
+    <id>http://pieux.github.io/blog/2014/01/06/gradle-installation-on-mac-os-x</id>
+    <content type="html"><![CDATA[<h1>Installation</h1>
+
+<p>refer <a href="http://www.gradle.org/installation">link</a></p>
+
+<p> 看文档发现了一个好玩的东西：</p>
+
+<p><strong>For Un*x users</strong></p>
+
+<p>You need a GNU compatible tool to unzip Gradle, if you want the file permissions to be properly set. We mention this as some zip front ends for Mac OS X don&rsquo;t restore the file permissions properly.</p>
+
+<p> 权限要正确被设置，注意下。</p>
+
+<p><strong>ENVIRONMENT VARIABLES</strong></p>
+
+<p>add <code>GRADLE_HOME/bin</code> to PATH.</p>
+
+<p><strong>TEST INSTALLATION</strong></p>
+
+<p><code>gradle -v</code></p>
+
+<h1>Build Scripts Basics</h1>
+
+<p>basic concepts: <em>projects</em> and <em>tasks</em>.</p>
+
+<p>below is the <code>build.gradle</code> of
+<a href="https://github.com/JakeWharton/hugo">JakeWharton/hugo</a>. Take is as a
+start to learn gradle.</p>
+
+<p>```
+allprojects {
+  buildscript {</p>
+
+<pre><code>repositories {
+  mavenCentral()
+}
+</code></pre>
+
+<p>  }</p>
+
+<p>  dependencies {</p>
+
+<pre><code>repositories {
+  mavenCentral()
+}
+</code></pre>
+
+<p>  }</p>
+
+<p>  group = GROUP
+  version = VERSION_NAME</p>
+
+<p>  apply plugin: &lsquo;maven&rsquo;
+}</p>
+
+<p>task wrapper(type: Wrapper) {
+  gradleVersion = &lsquo;1.8&rsquo;
+}</p>
+
+<p>task cleanExample(type: Exec) {
+  executable = &lsquo;gradle&rsquo;
+  workingDir = project.file(&lsquo;hugo-example&rsquo;)
+  args = [ &lsquo;clean&rsquo; ]
+}</p>
+
+<p>task assembleExample(type: Exec) {
+  executable = &lsquo;gradle&rsquo;
+  workingDir = project.file(&lsquo;hugo-example&rsquo;)
+  args = [ &lsquo;assemble&rsquo; ]
+}</p>
+
+<p>task installExample(type: Exec) {
+  executable = &lsquo;gradle&rsquo;
+  workingDir = project.file(&lsquo;hugo-example&rsquo;)
+  args = [ &lsquo;installDebug&rsquo; ]
+}
+```</p>
+]]></content>
+  </entry>
+  
+</feed>
