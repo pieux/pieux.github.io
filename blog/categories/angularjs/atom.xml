@@ -4,7 +4,7 @@
   <title><![CDATA[Category: AngularJS | POEMS]]></title>
   <link href="http://pieux.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://pieux.github.io/"/>
-  <updated>2014-01-07T12:04:58+08:00</updated>
+  <updated>2014-01-08T11:26:12+08:00</updated>
   <id>http://pieux.github.io/</id>
   <author>
     <name><![CDATA[Pieux Xi]]></name>
@@ -12,6 +12,17 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A Intro to Ionic &amp; AngularJS]]></title>
+    <link href="http://pieux.github.io/blog/2014/01/07/a-intro-to-ionic-and-angularjs/"/>
+    <updated>2014-01-07T12:07:40+08:00</updated>
+    <id>http://pieux.github.io/blog/2014/01/07/a-intro-to-ionic-and-angularjs</id>
+    <content type="html"><![CDATA[<h1>Phonegap</h1>
+
+<p> Phonegap 到底是什么？</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Resources for Starting Phonegap]]></title>

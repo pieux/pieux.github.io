@@ -7,18 +7,7 @@
 
 	<meta name="author" content="Pieux Xi">
 
-<meta name="description" content="记录在阅读 Jasig Cas 的源码学习到的 Java 知识。 1
-public abstract class AuthenticationException extends Exception { 首先，这是一个 abstract class. 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11 &hellip;"> <meta name="keywords" content="">
+<meta name="description" content="学习下Lisp的宏（macro）。 首先，区别：Lisp宏和键盘宏（keyboard macro）是两个不同的概念。 一个LISP宏(Lisp Macro)是一个扩展LISP语言的用户定义的结构. 宏不像函数那样对参数执行表达式. 它们只是在构造一个包括这些参数的表达式. 也就是，宏是一个结构， &hellip;"> <meta name="keywords" content="">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -59,6 +48,232 @@ public abstract class AuthenticationException extends Exception { 首先，这�
 </header>
 
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<header>
+		<h2 class="title">
+			
+			<a href="/blog/2013/11/23/macro-and-defmacro-in-emacs/">
+			
+				Macro &amp; Defmacro in Emacs</a>
+		</h2>
+		<div class="meta date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-23T16:42:00+08:00" pubdate data-updated="true">Nov 23<span>rd</span>, 2013</time></div>
+	</header>
+	<div class="entry-content">
+		<p>学习下Lisp的宏（macro）。</p>
+
+<p>首先，区别：Lisp宏和键盘宏（keyboard macro）是两个不同的概念。</p>
+
+<p>一个LISP宏(Lisp Macro)是一个扩展LISP语言的用户定义的结构.
+ 宏不像函数那样对参数执行表达式. 它们只是在构造一个包括这些参数的表达式.</p>
+
+<blockquote><p>也就是，宏是一个结构，是在构造。就是Lisp非常牛逼的一点：Code as data。</p></blockquote>
+
+<p>首先看下语法定义：</p>
+
+<p><code>defmacro</code> is a Lisp macro in `byte-run.el&#8217;.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(defmacro NAME ARGLIST &optional DOCSTRING DECL &rest BODY)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Define NAME as a macro.
+When the macro is called, as in (NAME ARGS&hellip;),
+the function (lambda ARGLIST BODY&hellip;) is applied to
+the list ARGS&hellip; as it appears in the expression,
+and the result should be a form to be evaluated instead of the original.
+DECL is a declaration, optional, of the form (declare DECLS&hellip;) where
+DECLS is a list of elements of the form (PROP . VALUES).  These are
+interpreted according to `macro-declarations-alist&#8217;.
+The return value is undefined.</p>
+
+<p>好长的解释。</p>
+
+<p>看一个实例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(defmacro inc (var)
+</span><span class='line'>  (list 'setq var (list '1+ var)))
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>注意一点：<code>(list '1+ var)</code> 开始时写成<code>(list '1+var)</code>，少写了一个空格。</p></blockquote>
+
+<p>定义了一个Lisp宏：<code>inc (var)</code>。这个macro的BODY是（按照list函数拼出来）:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(setq var (1+ var))</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然也可以这样展开宏：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(macroexpand '(inc x))</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在就可以用宏了：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(setq x 1)
+</span><span class='line'>(inc x)</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>解释:</p></blockquote>
+
+<p><code>list</code> 的用法</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>list is a built-in function in `C source code'.
+</span><span class='line'>
+</span><span class='line'>(list &rest OBJECTS)
+</span><span class='line'>
+</span><span class='line'>Return a newly created list with specified arguments as elements.
+</span><span class='line'>Any number of arguments, even zero arguments, are allowed.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>宏还有一种写法，就是使用反引用（Backquote）。</p>
+
+<p>我们可以用 &lsquo; 引用一个对象并不执行.我们还可以用 反引用 ` 引用一个列表, 但是只是选择性的执行列表的元素.</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post">
+	<header>
+		<h2 class="title">
+			
+			<a href="/blog/2013/11/23/a-growing-emacser/">
+			
+				A Growing Emacser</a>
+		</h2>
+		<div class="meta date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-23T16:00:00+08:00" pubdate data-updated="true">Nov 23<span>rd</span>, 2013</time></div>
+	</header>
+	<div class="entry-content">
+		<hr />
+
+<p><code>when:</code> when is a lisp macro</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(when COND BODY...)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If COND yields non-nil, do BODY, else return nil.
+When COND yields non-nil, eval BODY forms sequentially and return
+value of last one, or nil if there are none.</p>
+
+<hr />
+
+<p><code>fboundp</code> is a built-in function in `C source code&#8217;.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(fboundp SYMBOL)</span></code></pre></td></tr></table></div></figure>
+
+
+<hr />
+
+<p><code>add-to-list</code> is a compiled Lisp function in `subr.el&#8217;.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(add-to-list LIST-VAR ELEMENT &optional APPEND COMPARE-FN)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add ELEMENT to the value of <code>LIST-VAR</code> if it isn&rsquo;t there yet.
+The test for presence of <code>ELEMENT</code> is done with <code>equal</code>,
+or with <code>COMPARE-FN</code> if that&rsquo;s non-nil.
+If <code>ELEMENT</code> is added, it is added at the beginning of the list,
+unless the optional argument <code>APPEND</code> is non-nil, in which case
+ELEMENT is added at the end.</p>
+
+<p>The return value is the new value of LIST-VAR.</p>
+
+<hr />
+
+<p><code>provide</code> is a built-in function in `C source code&#8217;.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(provide FEATURE &optional SUBFEATURES)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Announce that FEATURE is a feature of the current Emacs.
+The optional argument SUBFEATURES should be a list of symbols listing
+particular subfeatures supported in this version of FEATURE.</p>
+
+<hr />
+
+<p><code>C-x h</code> runs the command mark-whole-buffer</p>
+
+<p><code>C-w</code> runs the command kill region</p>
+
+<hr />
+
+<p>use <code>C-x &lt;right&gt;</code>, <code>C-x &lt;left&gt;</code> to cycle around in the buffer ring.</p>
+
+<p><code>iswitchb-mode</code> replaces the default C-x b behaviour with a very intuitive buffer-switching-with-completion system.</p>
+
+<p>The related commands are <code>C-x b</code>, <code>C-s</code> and <code>C-r</code>.</p>
+
+<hr />
+
+<p>Dired Mode 非常别扭，很多无用的快捷键。</p>
+
+<p>emacs <code>dired</code> (Directory Editor)mode.</p>
+
+<p><code>C-x d</code>: enter dired mode(use <code>M-x RET dired RET</code> is quick too)</p>
+
+<p><code>C-x 4 d</code>: <code>dired-other-window</code></p>
+
+<p><code>C-x C-j</code>: (dired-jump to current file)</p>
+
+<p><code>q</code>: quit</p>
+
+<p><code>R</code> to rename the file (or &lsquo;dired-do-rename&rsquo;).</p>
+
+<p><code>C-x k RET</code> to go back to the (renamed) buffer</p>
+
+<hr />
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post">

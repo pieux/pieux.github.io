@@ -4,13 +4,147 @@
   <title><![CDATA[POEMS]]></title>
   <link href="http://pieux.github.io/atom.xml" rel="self"/>
   <link href="http://pieux.github.io/"/>
-  <updated>2014-01-07T12:04:58+08:00</updated>
+  <updated>2014-01-08T11:26:12+08:00</updated>
   <id>http://pieux.github.io/</id>
   <author>
     <name><![CDATA[Pieux Xi]]></name>
     
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[jasig cas server cacerts]]></title>
+    <link href="http://pieux.github.io/blog/2014/01/08/jasig-cas-server-cacerts/"/>
+    <updated>2014-01-08T10:49:34+08:00</updated>
+    <id>http://pieux.github.io/blog/2014/01/08/jasig-cas-server-cacerts</id>
+    <content type="html"><![CDATA[<p>由于 SSO 域名切换成好记的域名，需要重新生成证书，并导入：</p>
+
+<h1>删除 Client 中曾导入的旧的证书</h1>
+
+<p>先找到 CAS Client 部署服务器的
+存储 所有信任证书（cacerts） 的位置：<code>/usr/local/jdk/jre/lib/security/cacerts</code></p>
+
+<p> 从中删除原来导入的 cacert。 注： 之前 这里取的别名是 smalllove，这次
+ 重新取个好记的名字 ssoalpha</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[dianping@host_214-74 security]$ keytool -delete -trustcacerts -alias smalllove -keystore /usr/local/jdk/jre/lib/security/cacerts -storepass changeit</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Server 重新生成证书</h1>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>keytool -genkey -alias ssoalpha -keyalg RSA -storepass changeit  -keystore ~/keys/.keystore -validity 3600</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[dianping@host_214-124 ~]$ keytool -genkey -alias ssoalpha -keyalg RSA -storepass changeit  -keystore ~/keys/.keystore -validity 3600
+</span><span class='line'>您的名字与姓氏是什么？
+</span><span class='line'>  [Unknown]：  sso.a.alpha.dp
+</span><span class='line'>您的组织单位名称是什么？
+</span><span class='line'>  [Unknown]：  ssoalpha
+</span><span class='line'>您的组织名称是什么？
+</span><span class='line'>  [Unknown]：  ssoalpha
+</span><span class='line'>您所在的城市或区域名称是什么？
+</span><span class='line'>  [Unknown]：  ssoalpha
+</span><span class='line'>您所在的州或省份名称是什么？
+</span><span class='line'>  [Unknown]：  ssoalpha
+</span><span class='line'>该单位的两字母国家代码是什么
+</span><span class='line'>  [Unknown]：  CN
+</span><span class='line'>CN=sso.a.alpha.dp, OU=ssoalpha, O=ssoalpha, L=ssoalpha, ST=ssoalpha, C=CN 正确吗？
+</span><span class='line'>  [否]：  y
+</span><span class='line'>
+</span><span class='line'>输入&lt;ssoalpha&gt;的主密码
+</span><span class='line'>  （如果和 keystore 密码相同，按回车）：
+</span><span class='line'>[dianping@host_214-124 ~]$</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Server 导出证书</h1>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[dianping@host_214-124 keys]$ keytool -export -file ~/keys/ssoalpha.crt -alias ssoalpha -keystore ~/keys/.keystore -storepass changeit
+</span><span class='line'>保存在文件中的认证 &lt;/home/dianping/keys/ssoalpha.crt&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>使用 SCP 工具从 server 下载证书</h1>
+
+<p>注意写成完整路径：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>scp -P 58422 dianping@192.168.214.124:$1 $2
+</span><span class='line'>copy-from-alpha-cas-server /home/dianping/keys/ssoalpha.crt .</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>使用 SCP 工具把证书上传到 client 部署机器</h1>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>scp -P 58422 $1 dianping@192.168.214.74:$2
+</span><span class='line'>copy-to-alpha-employee-port ./ssoalpha.crt /home/dianping/keys/.</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>client 导入证书</h1>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[dianping@host_214-74 keys]$ keytool -import -keystore /usr/local/jdk/jre/lib/security/cacerts -file ./ssoalpha.crt -alias ssoalpha
+</span><span class='line'>输入keystore密码：
+</span><span class='line'>所有者:CN=sso.a.alpha.dp, OU=ssoalpha, O=ssoalpha, L=ssoalpha, ST=ssoalpha, C=CN
+</span><span class='line'>签发人:CN=sso.a.alpha.dp, OU=ssoalpha, O=ssoalpha, L=ssoalpha, ST=ssoalpha, C=CN
+</span><span class='line'>序列号:52ccbfcc
+</span><span class='line'>有效期: XXX
+</span><span class='line'>证书指纹:
+</span><span class='line'>     XXX
+</span><span class='line'>   签名算法名称:SHA1withRSA
+</span><span class='line'>   版本: X
+</span><span class='line'>信任这个认证？ [否]：  y
+</span><span class='line'>认证已添加至keystore中</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[A Intro to Ionic &amp; AngularJS]]></title>
+    <link href="http://pieux.github.io/blog/2014/01/07/a-intro-to-ionic-and-angularjs/"/>
+    <updated>2014-01-07T12:07:40+08:00</updated>
+    <id>http://pieux.github.io/blog/2014/01/07/a-intro-to-ionic-and-angularjs</id>
+    <content type="html"><![CDATA[<h1>Phonegap</h1>
+
+<p> Phonegap 到底是什么？</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Gradle Installation on Mac OS X]]></title>
@@ -2016,186 +2150,6 @@ The value is actually the first element of LIST whose car equals KEY.</p>
 
 
 <p>以上是3中最常见的方法（虽然我不知道什么是 hippie-expand）。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[macro &amp; defmacro in Emacs]]></title>
-    <link href="http://pieux.github.io/blog/2013/11/23/macro-and-defmacro-in-emacs/"/>
-    <updated>2013-11-23T16:42:00+08:00</updated>
-    <id>http://pieux.github.io/blog/2013/11/23/macro-and-defmacro-in-emacs</id>
-    <content type="html"><![CDATA[<p>学习下Lisp的宏（macro）。</p>
-
-<p>首先，区别：Lisp宏和键盘宏（keyboard macro）是两个不同的概念。</p>
-
-<p>一个LISP宏(Lisp Macro)是一个扩展LISP语言的用户定义的结构.
- 宏不像函数那样对参数执行表达式. 它们只是在构造一个包括这些参数的表达式.</p>
-
-<blockquote><p>也就是，宏是一个结构，是在构造。就是Lisp非常牛逼的一点：Code as data。</p></blockquote>
-
-<p>首先看下语法定义：</p>
-
-<p><code>defmacro</code> is a Lisp macro in `byte-run.el&#8217;.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(defmacro NAME ARGLIST &optional DOCSTRING DECL &rest BODY)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Define NAME as a macro.
-When the macro is called, as in (NAME ARGS&hellip;),
-the function (lambda ARGLIST BODY&hellip;) is applied to
-the list ARGS&hellip; as it appears in the expression,
-and the result should be a form to be evaluated instead of the original.
-DECL is a declaration, optional, of the form (declare DECLS&hellip;) where
-DECLS is a list of elements of the form (PROP . VALUES).  These are
-interpreted according to `macro-declarations-alist&#8217;.
-The return value is undefined.</p>
-
-<p>好长的解释。</p>
-
-<p>看一个实例：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(defmacro inc (var)
-</span><span class='line'>  (list 'setq var (list '1+ var)))
-</span></code></pre></td></tr></table></div></figure>
-
-
-<blockquote><p>注意一点：<code>(list '1+ var)</code> 开始时写成<code>(list '1+var)</code>，少写了一个空格。</p></blockquote>
-
-<p>定义了一个Lisp宏：<code>inc (var)</code>。这个macro的BODY是（按照list函数拼出来）:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(setq var (1+ var))</span></code></pre></td></tr></table></div></figure>
-
-
-<p>当然也可以这样展开宏：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(macroexpand '(inc x))</span></code></pre></td></tr></table></div></figure>
-
-
-<p>现在就可以用宏了：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(setq x 1)
-</span><span class='line'>(inc x)</span></code></pre></td></tr></table></div></figure>
-
-
-<blockquote><p>解释:</p></blockquote>
-
-<p><code>list</code> 的用法</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>list is a built-in function in `C source code'.
-</span><span class='line'>
-</span><span class='line'>(list &rest OBJECTS)
-</span><span class='line'>
-</span><span class='line'>Return a newly created list with specified arguments as elements.
-</span><span class='line'>Any number of arguments, even zero arguments, are allowed.
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>宏还有一种写法，就是使用反引用（Backquote）。</p>
-
-<p>我们可以用 &lsquo; 引用一个对象并不执行.我们还可以用 反引用 ` 引用一个列表, 但是只是选择性的执行列表的元素.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[A Growing Emacser]]></title>
-    <link href="http://pieux.github.io/blog/2013/11/23/a-growing-emacser/"/>
-    <updated>2013-11-23T16:00:00+08:00</updated>
-    <id>http://pieux.github.io/blog/2013/11/23/a-growing-emacser</id>
-    <content type="html"><![CDATA[<hr />
-
-<p><code>when:</code> when is a lisp macro</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(when COND BODY...)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>If COND yields non-nil, do BODY, else return nil.
-When COND yields non-nil, eval BODY forms sequentially and return
-value of last one, or nil if there are none.</p>
-
-<hr />
-
-<p><code>fboundp</code> is a built-in function in `C source code&#8217;.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(fboundp SYMBOL)</span></code></pre></td></tr></table></div></figure>
-
-
-<hr />
-
-<p><code>add-to-list</code> is a compiled Lisp function in `subr.el&#8217;.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(add-to-list LIST-VAR ELEMENT &optional APPEND COMPARE-FN)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Add ELEMENT to the value of <code>LIST-VAR</code> if it isn&rsquo;t there yet.
-The test for presence of <code>ELEMENT</code> is done with <code>equal</code>,
-or with <code>COMPARE-FN</code> if that&rsquo;s non-nil.
-If <code>ELEMENT</code> is added, it is added at the beginning of the list,
-unless the optional argument <code>APPEND</code> is non-nil, in which case
-ELEMENT is added at the end.</p>
-
-<p>The return value is the new value of LIST-VAR.</p>
-
-<hr />
-
-<p><code>provide</code> is a built-in function in `C source code&#8217;.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(provide FEATURE &optional SUBFEATURES)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Announce that FEATURE is a feature of the current Emacs.
-The optional argument SUBFEATURES should be a list of symbols listing
-particular subfeatures supported in this version of FEATURE.</p>
-
-<hr />
-
-<p><code>C-x h</code> runs the command mark-whole-buffer</p>
-
-<p><code>C-w</code> runs the command kill region</p>
-
-<hr />
-
-<p>use <code>C-x &lt;right&gt;</code>, <code>C-x &lt;left&gt;</code> to cycle around in the buffer ring.</p>
-
-<p><code>iswitchb-mode</code> replaces the default C-x b behaviour with a very intuitive buffer-switching-with-completion system.</p>
-
-<p>The related commands are <code>C-x b</code>, <code>C-s</code> and <code>C-r</code>.</p>
-
-<hr />
-
-<p>Dired Mode 非常别扭，很多无用的快捷键。</p>
-
-<p>emacs <code>dired</code> (Directory Editor)mode.</p>
-
-<p><code>C-x d</code>: enter dired mode(use <code>M-x RET dired RET</code> is quick too)</p>
-
-<p><code>C-x 4 d</code>: <code>dired-other-window</code></p>
-
-<p><code>C-x C-j</code>: (dired-jump to current file)</p>
-
-<p><code>q</code>: quit</p>
-
-<p><code>R</code> to rename the file (or &lsquo;dired-do-rename&rsquo;).</p>
-
-<p><code>C-x k RET</code> to go back to the (renamed) buffer</p>
-
-<hr />
 ]]></content>
   </entry>
   
