@@ -4,7 +4,7 @@
   <title><![CDATA[Category: CAS | POEMS]]></title>
   <link href="http://pieux.github.io/blog/categories/cas/atom.xml" rel="self"/>
   <link href="http://pieux.github.io/"/>
-  <updated>2014-01-08T15:03:55+08:00</updated>
+  <updated>2014-01-08T15:10:31+08:00</updated>
   <id>http://pieux.github.io/</id>
   <author>
     <name><![CDATA[Pieux Xi]]></name>
@@ -71,8 +71,7 @@ CN=sso.a.alpha.dp, OU=ssoalpha, O=ssoalpha, L=ssoalpha, ST=ssoalpha, C=CN 正确
 <p>JBoss 配置 SSL 需要动到的文件：
 <code>$JBOSS_HOME/server/default/deploy/jboss-web.deployer/server.xml</code></p>
 
-<p> 其中的 keystoreFile 的位置是：
- <code>$JBOSS_HOME/server/default/conf/server.keystore</code>。</p>
+<p> 其中的 keystoreFile 的位置是：<code>$JBOSS_HOME/server/default/conf/server.keystore</code>。</p>
 
 <p> 这个 keystore 就是生成证书时生成的。</p>
 
