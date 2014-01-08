@@ -4,7 +4,7 @@
   <title><![CDATA[Category: CAS | POEMS]]></title>
   <link href="http://pieux.github.io/blog/categories/cas/atom.xml" rel="self"/>
   <link href="http://pieux.github.io/"/>
-  <updated>2014-01-08T11:26:12+08:00</updated>
+  <updated>2014-01-08T15:03:55+08:00</updated>
   <id>http://pieux.github.io/</id>
   <author>
     <name><![CDATA[Pieux Xi]]></name>
@@ -62,6 +62,43 @@ CN=sso.a.alpha.dp, OU=ssoalpha, O=ssoalpha, L=ssoalpha, ST=ssoalpha, C=CN 正确
 
 <p>[dianping@host_214-124 ~]$
 ```</p>
+
+<h1>JBOSS 配置 SSL</h1>
+
+<p>因为重新生成了 keystore，而 JBoss 的 SSL 配置有一部分需要用到
+<code>keystore</code> 文件。</p>
+
+<p>JBoss 配置 SSL 需要动到的文件：
+<code>$JBOSS_HOME/server/default/deploy/jboss-web.deployer/server.xml</code></p>
+
+<p> 其中的 keystoreFile 的位置是：
+ <code>$JBOSS_HOME/server/default/conf/server.keystore</code>。</p>
+
+<p> 这个 keystore 就是生成证书时生成的。</p>
+
+<p>```</p>
+
+<pre><code>&lt;!-- Define a SSL HTTP/1.1 Connector on port 8443
+     This connector uses the JSSE configuration, when using APR, the
+     connector should be using the OpenSSL style configuration
+     described in the APR documentation --&gt;
+
+&lt;Connector port="8443" address="${jboss.bind.address}"
+            protocol="HTTP/1.1" SSLEnabled="true"
+           maxThreads="150" scheme="https" secure="true"
+           clientAuth="false" sslProtocol="TLS"
+           keystoreFile="${jboss.server.home.dir}/conf/server.keystore"
+           keystorePass="changeit"
+           /&gt;
+</code></pre>
+
+<p>```</p>
+
+<p> 特别注意下：</p>
+
+<p><code>
+同样的war在tomcat下运行是没有问题的，但在jboss下却包上面的异常。这说明正常情况下HibernatePersistence 应该能转换成PersistenceProvider，不能转换的原因就是这两个类是由不同的加载器加载的。搜索jboss classloader查找解决方案，设置server\default\deploy\JBoss-web.deploy\META-INF\JBoss-service.xml 文件中的&lt;attribute name="UseJBossWebLoader"&gt;true&lt;/attribute&gt;.
+</code></p>
 
 <h1>Server 导出证书</h1>
 

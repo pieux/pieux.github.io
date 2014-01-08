@@ -123,8 +123,53 @@
 </span><span class='line'>  [否]：  y
 </span><span class='line'>
 </span><span class='line'>输入&lt;ssoalpha&gt;的主密码
-</span><span class='line'>  （如果和 keystore 密码相同，按回车）：
+</span><span class='line'>    （如果和 keystore 密码相同，按回车）：
 </span><span class='line'>[dianping@host_214-124 ~]$</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>JBOSS 配置 SSL</h1>
+
+<p>因为重新生成了 keystore，而 JBoss 的 SSL 配置有一部分需要用到
+<code>keystore</code> 文件。</p>
+
+<p>JBoss 配置 SSL 需要动到的文件：
+<code>$JBOSS_HOME/server/default/deploy/jboss-web.deployer/server.xml</code></p>
+
+<p> 其中的 keystoreFile 的位置是：
+ <code>$JBOSS_HOME/server/default/conf/server.keystore</code>。</p>
+
+<p> 这个 keystore 就是生成证书时生成的。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;!-- Define a SSL HTTP/1.1 Connector on port 8443
+</span><span class='line'>     This connector uses the JSSE configuration, when using APR, the
+</span><span class='line'>     connector should be using the OpenSSL style configuration
+</span><span class='line'>     described in the APR documentation --&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;Connector port="8443" address="${jboss.bind.address}"
+</span><span class='line'>            protocol="HTTP/1.1" SSLEnabled="true"
+</span><span class='line'>           maxThreads="150" scheme="https" secure="true"
+</span><span class='line'>           clientAuth="false" sslProtocol="TLS"
+</span><span class='line'>           keystoreFile="${jboss.server.home.dir}/conf/server.keystore"
+</span><span class='line'>           keystorePass="changeit"
+</span><span class='line'>           /&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p> 特别注意下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>同样的war在tomcat下运行是没有问题的，但在jboss下却包上面的异常。这说明正常情况下HibernatePersistence 应该能转换成PersistenceProvider，不能转换的原因就是这两个类是由不同的加载器加载的。搜索jboss classloader查找解决方案，设置server\default\deploy\JBoss-web.deploy\META-INF\JBoss-service.xml 文件中的&lt;attribute name="UseJBossWebLoader"&gt;true&lt;/attribute&gt;.</span></code></pre></td></tr></table></div></figure>
 
 
 <h1>Server 导出证书</h1>
@@ -175,8 +220,8 @@
 </span><span class='line'>有效期: XXX
 </span><span class='line'>证书指纹:
 </span><span class='line'>     XXX
-</span><span class='line'>   签名算法名称:SHA1withRSA
-</span><span class='line'>   版本: X
+</span><span class='line'>     签名算法名称:SHA1withRSA
+</span><span class='line'>     版本: X
 </span><span class='line'>信任这个认证？ [否]：  y
 </span><span class='line'>认证已添加至keystore中</span></code></pre></td></tr></table></div></figure>
 
