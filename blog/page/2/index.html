@@ -7,7 +7,7 @@
 
 	<meta name="author" content="Pieux Xi">
 
-<meta name="description" content="Struts 2 Maven Archetype The Blank Archetype (struts2-archetype-blank) The Starter Archetype (struts2-archetype-starter) Compared to the former, it &hellip;"> <meta name="keywords" content="">
+<meta name="description" content="假设 CAS Server 的域名是 cas.server.com CAS Server 的 webapp 是 spring web flow，登陆地址为：https://cas.server.com/cas/login 登出地址为：https://cas.server.com/cas/ &hellip;"> <meta name="keywords" content="">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -48,6 +48,139 @@
 </header>
 
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<header>
+		<h2 class="title">
+			
+			<a href="/blog/2013/12/08/note-everything-about-cas/">
+			
+				NOTE: Everything About CAS</a>
+		</h2>
+		<div class="meta date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-08T02:12:00+08:00" pubdate data-updated="true">Dec 8<span>th</span>, 2013</time></div>
+	</header>
+	<div class="entry-content">
+		<p>假设 CAS Server 的域名是 cas.server.com</p>
+
+<p>CAS Server 的 webapp 是 spring web flow，登陆地址为：<a href="https://cas.server.com/cas/login">https://cas.server.com/cas/login</a></p>
+
+<p>登出地址为：<a href="https://cas.server.com/cas/logout">https://cas.server.com/cas/logout</a></p>
+
+<p>语言参数为：locale=zh_CN，locale=en</p>
+
+<p>除了配置 CAS Server 和 Client 外，需要配置环境，包括生成和导出导入证书，Tomcat配置SSL等。</p>
+
+<h2>CAS Server</h2>
+
+<h3>原理（认证流程）</h3>
+
+<p><img src="http://i.imgur.com/MDSRTIc.jpg" alt="CAS 基本模式" /></p>
+
+<p><strong>原理</strong>：按照此图来说</p>
+
+<ol>
+<li><p>用户访问CAS Client</p></li>
+<li><p>其配置的 AuthenticationFilter 会拦截此请求，生成 service 参数，并重定向到 CAS Server 的登陆接口，url为 <a href="https://cas.server.com/login?service=redirect_url">https://cas.server.com/login?service=redirect_url</a></p></li>
+<li><p>用户在 CAS Server 输入 Credentials(一般就是用户名和密码)进行身份验证，成功后，CAS Server 会生成认证 cookie，即TGC。（另：TGC作为 cookie之外，也会换存在服务器本地，我猜测是不是服务器运行实例的内存中。）</p></li>
+<li><p>CAS Server还会根据 service 参数，生成 Ticket，即ST。ST会保存在服务器，也会加在 url 后面，重定向回 client。url为 <a href="http://client_server_url:port/app_name?ticket=ST-*-*">http://client_server_url:port/app_name?ticket=ST-*-*</a></p></li>
+<li><p>Client 的 AuthenticationFilter 看到 ticket 参数后，会跳过，交由后面的 TicketValidationFilter 来处理。TicketValidationFilter 会利用 httpclient 工具访问 cas server 的 /serviceValidate 接口，将 ticket, service 传入该接口，验证 ticket 的有效性。</p></li>
+<li><p>如果返回验证成功，就会把用户信息写入 client 的 session 里。</p></li>
+</ol>
+
+
+<p>至此，SSO 会话就建立起来了。</p>
+
+<p>结果就是：</p>
+
+<ol>
+<li><p>用户在同一浏览器访问同一 client，不会去 CAS Server 认证，因为 AuthenticationFilter 会在 session 读取到用户信息。</p></li>
+<li><p>用户在同一浏览器访问其他 client，AuthenticationFilter 在 session 里读不到用户信息，会去 cas login 接口认证，但是此时 cas login 接口会读取到存储在cas server域名下的 TGC，所以，CAS Server不会跳到登录页，只会根据 service 参数生成一个 ticket，传给 client。然后由TicketValidationFilter做一次交互验证。</p></li>
+</ol>
+
+
+<h3>CAS Server 提供的接口</h3>
+
+<p>cas server 一共定义了9个接口。client 会通过 url redirect 和 httpclient 的方式和 server 交互。</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">接口 </th>
+<th align="left"> 说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">/login        </td>
+<td align="left"> 认证接口</td>
+</tr>
+<tr>
+<td align="center">/logout       </td>
+<td align="left"> 退出接口，销毁 TGC</td>
+</tr>
+<tr>
+<td align="center">/validate     </td>
+<td align="left"> 验证 ticket 接口，CAS1.0</td>
+</tr>
+<tr>
+<td align="center">/serviceValidate </td>
+<td align="left"> 同上，CAS2.0</td>
+</tr>
+<tr>
+<td align="center">/proxy        </td>
+<td align="left"> 支持代理功能的接口</td>
+</tr>
+<tr>
+<td align="center">/proxyValidate </td>
+<td align="left"> 同上</td>
+</tr>
+<tr>
+<td align="center">/CentralAuthenticationService </td>
+<td align="left"> 用于和远程的 web services 交互</td>
+</tr>
+<tr>
+<td align="center">/remoteLogin  </td>
+<td align="left"> 认证接口（新增）</td>
+</tr>
+<tr>
+<td align="center">/directLogin  </td>
+<td align="left"> 认证接口（新增）</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>认证相关的术语</h2>
+
+<ul>
+<li><p><strong>Credentials</strong> 用户提供的凭证，比如 用户名/密码，证书，IP地址，Cookie值等。</p></li>
+<li><p><strong>AuthenticationHandler</strong> 认证Handler，比如：AbstractUsernamePasswordAuthenticationHandler 负责处理 UsernamePasswordCredentials.</p></li>
+<li><p><strong>CredentialsToPrincipalResolvers</strong> 负责由 Credentials 生成 Principal 对象，每种 CredentialsToPrincipalResolvers 只处理 一种Credentials ，比如 UsernamePasswordCredentialsToPrincipalResolver 负责从 UsernamePasswordCredentials 中取出用户名，然后将其赋给生成的 SimplePrincipal 的 ID 属性。</p></li>
+<li><p><strong>AuthenticationMetaDataPopulators</strong> 负责将 Credentials 的一些属性赋值给 Authentication 的 attributes 属性。</p></li>
+<li><p><strong>Authentication</strong>  Authentication是认证管理器的最终处理结果， Authentication 封装了 Principal ，认证时间，及其他一些属性（可能来自 Credentials）。</p></li>
+<li><p><strong>AuthenticationManager</strong> 认证管理器得到 Credentials 对象后，负责调度AuthenticationHandler 去完成认证工作，最后返回的结果是 Authentication 对象。</p></li>
+<li><p><strong>CentralAuthenticationService</strong> CAS 的服务类，对 Web 层提供了一些方法。该类还负责调用 AuthenticationManager 完成认证逻辑。</p></li>
+</ul>
+
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post">
@@ -1539,103 +1672,6 @@ Order of Required Filters</p>
 </span><span class='line'>=&gt; ufrom JRuby"
 </span><span class='line'>irb(main):003:0&gt;</span></code></pre></td></tr></table></div></figure>
 
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post">
-	<header>
-		<h2 class="title">
-			
-			<a href="/blog/2013/11/24/ease-life-with-yasnippet/">
-			
-				Ease Life With YASnippet</a>
-		</h2>
-		<div class="meta date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-24T01:44:00+08:00" pubdate data-updated="true">Nov 24<span>th</span>, 2013</time></div>
-	</header>
-	<div class="entry-content">
-		<p>安装使用<code>package-install</code>，实际上可以写一个简易方法避免重复劳动：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(defun require-package (package)
-</span><span class='line'>  "Install given PACKAGE."
-</span><span class='line'>  (unless (package-installed-p package)
-</span><span class='line'>    (unless (assoc package package-archive-contents)
-</span><span class='line'>      (package-refresh-contents))
-</span><span class='line'>    (package-install package)))
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>学习下其中的1个function</p>
-
-<p><code>assoc</code> is a built-in function in `C source code&#8217;.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(assoc KEY LIST)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Return non-nil if KEY is `equal&#8217; to the car of an element of LIST.
-The value is actually the first element of LIST whose car equals KEY.</p>
-
-<p>开始学习如何使用YASnippet。</p>
-
-<p><strong>1 组织你的 Snippets</strong> (<em>Organizing Snippets</em>)</p>
-
-<p>Snippet的定义是储存在文件系统的文件中。YASnippet的触发机制会找到这些snippet tables，然后展开。</p>
-
-<p>首先，新建一个目录：my-snippets，用来存放自定义的snippets。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(require 'yasnippet)
-</span><span class='line'>
-</span><span class='line'>(setq yas-snippet-dirs (concat user-emacs-directory "my-snippets"))
-</span><span class='line'>
-</span><span class='line'>(add-hook 'prog-mode-hook 'yas-minor-mode)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>看下是怎么组织snippets的（这是YASnippet自带的）：</p>
-
-<p><code>.yas.parent</code>文件可以共享其他目录下的snippets。</p>
-
-<p>如果有一个空的<code>.yas-make-groups</code>文件，会在 YASnippet Menu按照目录结构组织地更清晰。</p>
-
-<p><strong>2 展开你的 Snippets</strong> (<em>Traiggering expansion</em>)</p>
-
-<p>很多中方式能展开snippets，包括：</p>
-
-<ul>
-<li><p>By typing an abbrev, the snippet trigger key, and then pressing the key defined in yas/trigger-key (which defaults to &ldquo;TAB&rdquo;). This works in buffers where the minor mode yas/minor-mode is active;</p></li>
-<li><p>By invoking the command yas/insert-snippet (either by typing M-x yas/insert-snippet or its keybinding). This does not require yas/minor-mode to be active.</p></li>
-<li><p>By using hippie-expand</p></li>
-</ul>
-
-
-<p>以上是3中最常见的方法（虽然我不知道什么是 hippie-expand）。</p>
 
 		
 		
