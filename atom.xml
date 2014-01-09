@@ -4,7 +4,7 @@
   <title><![CDATA[POEMS]]></title>
   <link href="http://pieux.github.io/atom.xml" rel="self"/>
   <link href="http://pieux.github.io/"/>
-  <updated>2014-01-08T20:32:55+08:00</updated>
+  <updated>2014-01-09T20:53:58+08:00</updated>
   <id>http://pieux.github.io/</id>
   <author>
     <name><![CDATA[Pieux Xi]]></name>
@@ -17,7 +17,35 @@
     <link href="http://pieux.github.io/blog/2014/01/08/begin-ios-development/"/>
     <updated>2014-01-08T20:30:45+08:00</updated>
     <id>http://pieux.github.io/blog/2014/01/08/begin-ios-development</id>
-    <content type="html"><![CDATA[
+    <content type="html"><![CDATA[<h1>开始 iOS 开发</h1>
+
+<h2>iOS 开发环境</h2>
+
+<ul>
+<li>MapKit</li>
+<li>WebKit</li>
+<li>StoreKit</li>
+<li>MediaPlayer</li>
+<li>Social</li>
+<li>CoreData</li>
+</ul>
+
+
+<p>Model-View-Controller(MVC)</p>
+
+<h2>使用 Xcode</h2>
+
+<p>storyboard 文件</p>
+
+<p>XCode 界面</p>
+
+<ul>
+<li>Utilities</li>
+<li>UIKit</li>
+</ul>
+
+
+<h1>创建一个 iOS 应用</h1>
 ]]></content>
   </entry>
   
