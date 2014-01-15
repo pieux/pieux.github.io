@@ -7,7 +7,9 @@
 
 	<meta name="author" content="Pieux Xi">
 
-<meta name="description" content="假设 CAS Server 的域名是 cas.server.com CAS Server 的 webapp 是 spring web flow，登陆地址为：https://cas.server.com/cas/login 登出地址为：https://cas.server.com/cas/ &hellip;"> <meta name="keywords" content="">
+<meta name="description" content="目前 Travis CI 给我的感觉和 Jekins 类似，每次 push 到 github 上，
+Travis 会自动跑一遍，比如按官方文档所说，对于 Java 项目，如果发现
+pom.xml 文件，会使用 Maven 3 的一些 lifecycle。 对于一个 Java 项目，需要在 . &hellip;"> <meta name="keywords" content="">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -48,6 +50,47 @@
 </header>
 
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<header>
+		<h2 class="title">
+			
+			<a href="/blog/2013/12/11/first-touch-of-travis-ci/">
+			
+				First Touch of Travis CI</a>
+		</h2>
+		<div class="meta date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-11T02:37:00+08:00" pubdate data-updated="true">Dec 11<span>th</span>, 2013</time></div>
+	</header>
+	<div class="entry-content">
+		<p>目前 Travis CI 给我的感觉和 Jekins 类似，每次 push 到 github 上，
+Travis 会自动跑一遍，比如按官方文档所说，对于 Java 项目，如果发现
+pom.xml 文件，会使用 Maven 3 的一些 lifecycle。</p>
+
+<p>对于一个 Java 项目，需要在 .git/ 目录下，新建文件 <code>.travis.yml</code>，最简
+单的内容是：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>language: java</span></code></pre></td></tr></table></div></figure>
+
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post">
@@ -1614,64 +1657,6 @@ Order of Required Filters</p>
 <h2>学习资料推荐</h2>
 
 <p><a href="http://www.commandlinefu.com/commands/tagged/800/commandfu">http://www.commandlinefu.com/commands/tagged/800/commandfu</a></p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post">
-	<header>
-		<h2 class="title">
-			
-			<a href="/blog/2013/11/27/jruby-small-memos/">
-			
-				JRuby Small Memos</a>
-		</h2>
-		<div class="meta date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-27T23:22:00+08:00" pubdate data-updated="true">Nov 27<span>th</span>, 2013</time></div>
-	</header>
-	<div class="entry-content">
-		<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ jruby --version</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ jruby -e "puts 'This is a short program'"
-</span><span class='line'>This is a short program</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ jirb
-</span><span class='line'>irb(main):001:0&gt; ['Hello', 'world'].join ' '
-</span><span class='line'>=&gt; "Hello world"
-</span><span class='line'>irb(main):002:0&gt; "ybuRJ morf".reverse
-</span><span class='line'>=&gt; ufrom JRuby"
-</span><span class='line'>irb(main):003:0&gt;</span></code></pre></td></tr></table></div></figure>
-
 
 		
 		

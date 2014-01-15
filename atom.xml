@@ -4,13 +4,419 @@
   <title><![CDATA[POEMS]]></title>
   <link href="http://pieux.github.io/atom.xml" rel="self"/>
   <link href="http://pieux.github.io/"/>
-  <updated>2014-01-09T20:53:58+08:00</updated>
+  <updated>2014-01-15T23:59:44+08:00</updated>
   <id>http://pieux.github.io/</id>
   <author>
     <name><![CDATA[Pieux Xi]]></name>
     
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[seajs]]></title>
+    <link href="http://pieux.github.io/blog/2014/01/09/seajs/"/>
+    <updated>2014-01-09T20:54:10+08:00</updated>
+    <id>http://pieux.github.io/blog/2014/01/09/seajs</id>
+    <content type="html"><![CDATA[<h1>[摘要]前端模块化开发的价值</h1>
+
+<p><a href="https://github.com/seajs/seajs/issues/547">link</a></p>
+
+<h2>恼人的命名冲突</h2>
+
+<p> 看不懂，也没必要深究历史，略过</p>
+
+<h2>烦琐的文件依赖</h2>
+
+<h2>使用 Sea.js 来解决</h2>
+
+<p>使用 Sea.js，在书写文件时，需要遵守 CMD （Common Module Definition）模
+块定义规范。</p>
+
+<p><strong>一个文件就是一个模块。</strong></p>
+
+<p>前面例子中的 util.js</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var org = {};
+</span><span class='line'>org.CoolSite = {};
+</span><span class='line'>org.CoolSite.Utils = {};
+</span><span class='line'>
+</span><span class='line'>org.CoolSite.Utils.each = function (arr) {
+</span><span class='line'>  // 实现代码
+</span><span class='line'>};
+</span><span class='line'>
+</span><span class='line'>org.CoolSite.Utils.log = function (str) {
+</span><span class='line'>  // 实现代码
+</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
+
+
+<p>变成:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>define(function(require, exports) {
+</span><span class='line'>  exports.each = function (arr) {
+</span><span class='line'>    // 实现代码
+</span><span class='line'>  };
+</span><span class='line'>
+</span><span class='line'>  exports.log = function (str) {
+</span><span class='line'>    // 实现代码
+</span><span class='line'>  };
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通过 <code>exports</code> 就可以向外提供接口。这样，dialog.js 的代码变成:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>define(function(require, exports) {
+</span><span class='line'>  var util = require('./util.js');
+</span><span class='line'>
+</span><span class='line'>  exports.init = function() {
+</span><span class='line'>    // 实现代码
+</span><span class='line'>  };
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>所以： define API</p></blockquote>
+
+<p>关键部分到了！我们通过 <code>require('./util.js')</code> 就可以拿到 util.js 中通过 <code>exports</code> 暴露的接口。</p>
+
+<p>这里的 <code>require</code> 可以认为是 Sea.js 给 JavaScript 语言增加的一个 语法关键字，通过 require 可以获取其他模块提供的接口。</p>
+
+<p>类似于 css 中的：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@import url("base.css");
+</span><span class='line'>
+</span><span class='line'>#id { ... }
+</span><span class='line'>.class { ... }</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Sea.js 增加的 require 语法关键字，就如 CSS 文件中的 @import 一样，给我们的源码赋予了依赖引入功能。</p>
+
+<p>如果你是后端开发工程师，更不会陌生。Java、Python、C# 等等语言，都有 include、import 等功能。JavaScript 语言本身也有类似功能，但目前还处于草案阶段，需要等到 ES6 标准得到主流浏览器支持后才能使用。</p>
+
+<p>这样，在页面中使用 dialog.js 将变得非常简单。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script src="sea.js"&gt;&lt;/script&gt;
+</span><span class='line'>&lt;script&gt;
+</span><span class='line'>seajs.use('dialog', function(Dialog) {
+</span><span class='line'>  Dialog.init(/* 传入配置 */);
+</span><span class='line'>});
+</span><span class='line'>&lt;/script&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>首先要在页面中引入 sea.js 文件，这一般通过页头全局把控，也方便更新维护。</p>
+
+<p>想在页面中使用某个组件时，只要通过 <code>seajs.use</code> 方法调用。</p>
+
+<blockquote><p>所以： seajs.use API</p></blockquote>
+
+<p>好好琢磨以上代码，我相信你已经看到了 Sea.js 带来的两大好处：</p>
+
+<ol>
+<li><p>通过 <code>exports</code> 暴露接口。这意味着不需要命名空间了，更不需要全局变量。这是一种彻底的命名冲突解决方案。</p></li>
+<li><p>通过 <code>require</code> 引入依赖。这可以让依赖内置，开发者只需关心当前模块的依赖，其他事情 Sea.js 都会自动处理好。对模块开发者来说，这是一种很好的 关注度分离，能让程序员更多地享受编码的乐趣。</p></li>
+</ol>
+
+
+<h1>[摘要] 5 分钟上手 Sea.js</h1>
+
+<h2>目录结构</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>examples/
+</span><span class='line'>  |-- sea-modules      存放 seajs、jquery 等文件，这也是模块的部署目录
+</span><span class='line'>  |-- static           存放各个项目的 js、css 文件
+</span><span class='line'>  |     |-- hello
+</span><span class='line'>  |     |-- lucky
+</span><span class='line'>  |     `-- todo
+</span><span class='line'>  `-- app              存放 html 等文件
+</span><span class='line'>        |-- hello.html
+</span><span class='line'>        |-- lucky.html
+</span><span class='line'>        `-- todo.html</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们从 hello.html 入手，来瞧瞧使用 Sea.js 如何组织代码。</p>
+
+<h2>在页面中加载模块</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// seajs 的简单配置
+</span><span class='line'>seajs.config({
+</span><span class='line'>  base: "../sea-modules/",
+</span><span class='line'>  alias: {
+</span><span class='line'>    "jquery": "jquery/jquery/1.10.1/jquery.js"
+</span><span class='line'>  }
+</span><span class='line'>})
+</span><span class='line'>
+</span><span class='line'>// 加载入口模块
+</span><span class='line'>seajs.use("../static/hello/src/main")</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>seajs.config API
+seajs.use API</p></blockquote>
+
+<h2>模块代码</h2>
+
+<p>这个小游戏有两个模块 spinning.js 和 main.js，遵循统一的写法：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 所有模块都通过 define 来定义
+</span><span class='line'>define(function(require, exports, module) {
+</span><span class='line'>
+</span><span class='line'>  // 通过 require 引入依赖
+</span><span class='line'>  var $ = require('jquery');
+</span><span class='line'>  var Spinning = require('./spinning');
+</span><span class='line'>
+</span><span class='line'>  // 通过 exports 对外提供接口
+</span><span class='line'>  exports.doSomething = ...
+</span><span class='line'>
+</span><span class='line'>  // 或者通过 module.exports 提供整个接口
+</span><span class='line'>  module.exports = ...
+</span><span class='line'>
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>[摘要] API 快速参考</h1>
+
+<h2>seajs.config</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>seajs.config({
+</span><span class='line'>
+</span><span class='line'>  // 设置路径，方便跨目录调用
+</span><span class='line'>  paths: {
+</span><span class='line'>    'arale': 'https://a.alipayobjects.com/arale',
+</span><span class='line'>    'jquery': 'https://a.alipayobjects.com/jquery'
+</span><span class='line'>  },
+</span><span class='line'>
+</span><span class='line'>  // 设置别名，方便调用
+</span><span class='line'>  alias: {
+</span><span class='line'>    'class': 'arale/class/1.0.0/class',
+</span><span class='line'>    'jquery': 'jquery/jquery/1.10.1/jquery'
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>更多配置项请参考：#262</p>
+
+<h2>seajs.use</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 加载一个模块
+</span><span class='line'>seajs.use('./a');
+</span><span class='line'>
+</span><span class='line'>// 加载一个模块，在加载完成时，执行回调
+</span><span class='line'>seajs.use('./a', function(a) {
+</span><span class='line'>  a.doSomething();
+</span><span class='line'>});
+</span><span class='line'>
+</span><span class='line'>// 加载多个模块，在加载完成时，执行回调
+</span><span class='line'>seajs.use(['./a', './b'], function(a, b) {
+</span><span class='line'>  a.doSomething();
+</span><span class='line'>  b.doSomething();
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>更多配置项请参考：#260</p>
+
+<h2>define</h2>
+
+<p>用来定义模块。Sea.js 推崇一个模块一个文件，遵循统一的写法：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>define(function(require, exports, module) {
+</span><span class='line'>
+</span><span class='line'>  // 模块代码
+</span><span class='line'>
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以手动指定模块 id 和依赖，详情请参考：#242
+require, exports 和 module 三个参数可酌情省略，具体用法如下。</p>
+
+<h3>require</h3>
+
+<p>require 用来获取指定模块的接口。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>define(function(require) {
+</span><span class='line'>
+</span><span class='line'>  // 获取模块 a 的接口
+</span><span class='line'>  var a = require('./a');
+</span><span class='line'>
+</span><span class='line'>  // 调用模块 a 的方法
+</span><span class='line'>  a.doSomething();
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意，require 只接受字符串直接量作为参数，详细约定请阅读：#259</p>
+
+<h3>require.async</h3>
+
+<p>用来在模块内部异步加载一个或多个模块。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>define(function(require) {
+</span><span class='line'>
+</span><span class='line'>  // 异步加载一个模块，在加载完成时，执行回调
+</span><span class='line'>  require.async('./b', function(b) {
+</span><span class='line'>    b.doSomething();
+</span><span class='line'>  });
+</span><span class='line'>
+</span><span class='line'>  // 异步加载多个模块，在加载完成时，执行回调
+</span><span class='line'>  require.async(['./c', './d'], function(c, d) {
+</span><span class='line'>    c.doSomething();
+</span><span class='line'>    d.doSomething();
+</span><span class='line'>  });
+</span><span class='line'>
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>详细说明请参考：#242</p>
+
+<h3>exports</h3>
+
+<p>用来在模块内部对外提供接口。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>define(function(require, exports) {
+</span><span class='line'>
+</span><span class='line'>  // 对外提供 foo 属性
+</span><span class='line'>  exports.foo = 'bar';
+</span><span class='line'>
+</span><span class='line'>  // 对外提供 doSomething 方法
+</span><span class='line'>  exports.doSomething = function() {};
+</span><span class='line'>
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>详细说明请参考：#242</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[begin ios development]]></title>
@@ -2122,41 +2528,6 @@ Order of Required Filters</p>
 <h2>学习资料推荐</h2>
 
 <p><a href="http://www.commandlinefu.com/commands/tagged/800/commandfu">http://www.commandlinefu.com/commands/tagged/800/commandfu</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[JRuby Small Memos]]></title>
-    <link href="http://pieux.github.io/blog/2013/11/27/jruby-small-memos/"/>
-    <updated>2013-11-27T23:22:00+08:00</updated>
-    <id>http://pieux.github.io/blog/2013/11/27/jruby-small-memos</id>
-    <content type="html"><![CDATA[<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ jruby --version</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ jruby -e "puts 'This is a short program'"
-</span><span class='line'>This is a short program</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ jirb
-</span><span class='line'>irb(main):001:0&gt; ['Hello', 'world'].join ' '
-</span><span class='line'>=&gt; "Hello world"
-</span><span class='line'>irb(main):002:0&gt; "ybuRJ morf".reverse
-</span><span class='line'>=&gt; ufrom JRuby"
-</span><span class='line'>irb(main):003:0&gt;</span></code></pre></td></tr></table></div></figure>
-
 ]]></content>
   </entry>
   

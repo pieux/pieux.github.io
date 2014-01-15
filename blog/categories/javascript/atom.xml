@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: JavaScript | POEMS]]></title>
+  <link href="http://pieux.github.io/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://pieux.github.io/"/>
+  <updated>2014-01-15T23:59:44+08:00</updated>
+  <id>http://pieux.github.io/</id>
+  <author>
+    <name><![CDATA[Pieux Xi]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[seajs]]></title>
+    <link href="http://pieux.github.io/blog/2014/01/09/seajs/"/>
+    <updated>2014-01-09T20:54:10+08:00</updated>
+    <id>http://pieux.github.io/blog/2014/01/09/seajs</id>
+    <content type="html"><![CDATA[<h1>[摘要]前端模块化开发的价值</h1>
+
+<p><a href="https://github.com/seajs/seajs/issues/547">link</a></p>
+
+<h2>恼人的命名冲突</h2>
+
+<p> 看不懂，也没必要深究历史，略过</p>
+
+<h2>烦琐的文件依赖</h2>
+
+<h2>使用 Sea.js 来解决</h2>
+
+<p>使用 Sea.js，在书写文件时，需要遵守 CMD （Common Module Definition）模
+块定义规范。</p>
+
+<p><strong>一个文件就是一个模块。</strong></p>
+
+<p>前面例子中的 util.js</p>
+
+<p>```
+var org = {};
+org.CoolSite = {};
+org.CoolSite.Utils = {};</p>
+
+<p>org.CoolSite.Utils.each = function (arr) {
+  // 实现代码
+};</p>
+
+<p>org.CoolSite.Utils.log = function (str) {
+  // 实现代码
+};
+```</p>
+
+<p>变成:</p>
+
+<p>```
+define(function(require, exports) {
+  exports.each = function (arr) {</p>
+
+<pre><code>// 实现代码
+</code></pre>
+
+<p>  };</p>
+
+<p>  exports.log = function (str) {</p>
+
+<pre><code>// 实现代码
+</code></pre>
+
+<p>  };
+});
+```</p>
+
+<p>通过 <code>exports</code> 就可以向外提供接口。这样，dialog.js 的代码变成:</p>
+
+<p>```
+define(function(require, exports) {
+  var util = require(&lsquo;./util.js&rsquo;);</p>
+
+<p>  exports.init = function() {</p>
+
+<pre><code>// 实现代码
+</code></pre>
+
+<p>  };
+});
+```</p>
+
+<blockquote><p>所以： define API</p></blockquote>
+
+<p>关键部分到了！我们通过 <code>require('./util.js')</code> 就可以拿到 util.js 中通过 <code>exports</code> 暴露的接口。</p>
+
+<p>这里的 <code>require</code> 可以认为是 Sea.js 给 JavaScript 语言增加的一个 语法关键字，通过 require 可以获取其他模块提供的接口。</p>
+
+<p>类似于 css 中的：
+```
+@import url(&ldquo;base.css&rdquo;);</p>
+
+<h1>id { &hellip; }</h1>
+
+<p>.class { &hellip; }
+```</p>
+
+<p>Sea.js 增加的 require 语法关键字，就如 CSS 文件中的 @import 一样，给我们的源码赋予了依赖引入功能。</p>
+
+<p>如果你是后端开发工程师，更不会陌生。Java、Python、C# 等等语言，都有 include、import 等功能。JavaScript 语言本身也有类似功能，但目前还处于草案阶段，需要等到 ES6 标准得到主流浏览器支持后才能使用。</p>
+
+<p>这样，在页面中使用 dialog.js 将变得非常简单。</p>
+
+<p>```</p>
+
+<script src="sea.js"></script>
+
+
+<script>
+seajs.use('dialog', function(Dialog) {
+  Dialog.init(/* 传入配置 */);
+});
+</script>
+
+
+<p>```</p>
+
+<p>首先要在页面中引入 sea.js 文件，这一般通过页头全局把控，也方便更新维护。</p>
+
+<p>想在页面中使用某个组件时，只要通过 <code>seajs.use</code> 方法调用。</p>
+
+<blockquote><p>所以： seajs.use API</p></blockquote>
+
+<p>好好琢磨以上代码，我相信你已经看到了 Sea.js 带来的两大好处：</p>
+
+<ol>
+<li><p>通过 <code>exports</code> 暴露接口。这意味着不需要命名空间了，更不需要全局变量。这是一种彻底的命名冲突解决方案。</p></li>
+<li><p>通过 <code>require</code> 引入依赖。这可以让依赖内置，开发者只需关心当前模块的依赖，其他事情 Sea.js 都会自动处理好。对模块开发者来说，这是一种很好的 关注度分离，能让程序员更多地享受编码的乐趣。</p></li>
+</ol>
+
+
+<h1>[摘要] 5 分钟上手 Sea.js</h1>
+
+<h2>目录结构</h2>
+
+<p><code>``
+examples/
+  |-- sea-modules      存放 seajs、jquery 等文件，这也是模块的部署目录
+  |-- static           存放各个项目的 js、css 文件
+  |     |-- hello
+  |     |-- lucky
+  |    </code>&mdash; todo
+  `&mdash; app              存放 html 等文件</p>
+
+<pre><code>    |-- hello.html
+    |-- lucky.html
+    `-- todo.html
+</code></pre>
+
+<p>```</p>
+
+<p>我们从 hello.html 入手，来瞧瞧使用 Sea.js 如何组织代码。</p>
+
+<h2>在页面中加载模块</h2>
+
+<p>```
+// seajs 的简单配置
+seajs.config({
+  base: &ldquo;../sea-modules/&rdquo;,
+  alias: {</p>
+
+<pre><code>"jquery": "jquery/jquery/1.10.1/jquery.js"
+</code></pre>
+
+<p>  }
+})</p>
+
+<p>// 加载入口模块
+seajs.use(&ldquo;../static/hello/src/main&rdquo;)
+```</p>
+
+<blockquote><p>seajs.config API
+seajs.use API</p></blockquote>
+
+<h2>模块代码</h2>
+
+<p>这个小游戏有两个模块 spinning.js 和 main.js，遵循统一的写法：</p>
+
+<p>```
+// 所有模块都通过 define 来定义
+define(function(require, exports, module) {</p>
+
+<p>  // 通过 require 引入依赖
+  var $ = require(&lsquo;jquery&rsquo;);
+  var Spinning = require(&lsquo;./spinning&rsquo;);</p>
+
+<p>  // 通过 exports 对外提供接口
+  exports.doSomething = &hellip;</p>
+
+<p>  // 或者通过 module.exports 提供整个接口
+  module.exports = &hellip;</p>
+
+<p>});
+```</p>
+
+<h1>[摘要] API 快速参考</h1>
+
+<h2>seajs.config</h2>
+
+<p>```
+seajs.config({</p>
+
+<p>  // 设置路径，方便跨目录调用
+  paths: {</p>
+
+<pre><code>'arale': 'https://a.alipayobjects.com/arale',
+'jquery': 'https://a.alipayobjects.com/jquery'
+</code></pre>
+
+<p>  },</p>
+
+<p>  // 设置别名，方便调用
+  alias: {</p>
+
+<pre><code>'class': 'arale/class/1.0.0/class',
+'jquery': 'jquery/jquery/1.10.1/jquery'
+</code></pre>
+
+<p>  }</p>
+
+<p>});
+```</p>
+
+<p>更多配置项请参考：#262</p>
+
+<h2>seajs.use</h2>
+
+<p>```
+// 加载一个模块
+seajs.use(&lsquo;./a&rsquo;);</p>
+
+<p>// 加载一个模块，在加载完成时，执行回调
+seajs.use(&lsquo;./a&rsquo;, function(a) {
+  a.doSomething();
+});</p>
+
+<p>// 加载多个模块，在加载完成时，执行回调
+seajs.use([&lsquo;./a&rsquo;, &lsquo;./b&rsquo;], function(a, b) {
+  a.doSomething();
+  b.doSomething();
+});
+```</p>
+
+<p>更多配置项请参考：#260</p>
+
+<h2>define</h2>
+
+<p>用来定义模块。Sea.js 推崇一个模块一个文件，遵循统一的写法：</p>
+
+<p>```
+define(function(require, exports, module) {</p>
+
+<p>  // 模块代码</p>
+
+<p>});
+```</p>
+
+<p>也可以手动指定模块 id 和依赖，详情请参考：#242
+require, exports 和 module 三个参数可酌情省略，具体用法如下。</p>
+
+<h3>require</h3>
+
+<p>require 用来获取指定模块的接口。</p>
+
+<p>```
+define(function(require) {</p>
+
+<p>  // 获取模块 a 的接口
+  var a = require(&lsquo;./a&rsquo;);</p>
+
+<p>  // 调用模块 a 的方法
+  a.doSomething();
+});
+```</p>
+
+<p>注意，require 只接受字符串直接量作为参数，详细约定请阅读：#259</p>
+
+<h3>require.async</h3>
+
+<p>用来在模块内部异步加载一个或多个模块。</p>
+
+<p>```
+define(function(require) {</p>
+
+<p>  // 异步加载一个模块，在加载完成时，执行回调
+  require.async(&lsquo;./b&rsquo;, function(b) {</p>
+
+<pre><code>b.doSomething();
+</code></pre>
+
+<p>  });</p>
+
+<p>  // 异步加载多个模块，在加载完成时，执行回调
+  require.async([&lsquo;./c&rsquo;, &lsquo;./d&rsquo;], function(c, d) {</p>
+
+<pre><code>c.doSomething();
+d.doSomething();
+</code></pre>
+
+<p>  });</p>
+
+<p>});
+```</p>
+
+<p>详细说明请参考：#242</p>
+
+<h3>exports</h3>
+
+<p>用来在模块内部对外提供接口。</p>
+
+<p>```
+define(function(require, exports) {</p>
+
+<p>  // 对外提供 foo 属性
+  exports.foo = &lsquo;bar&rsquo;;</p>
+
+<p>  // 对外提供 doSomething 方法
+  exports.doSomething = function() {};</p>
+
+<p>});
+```</p>
+
+<p>详细说明请参考：#242</p>
+]]></content>
+  </entry>
+  
+</feed>
